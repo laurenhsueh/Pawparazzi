@@ -48,6 +48,8 @@ struct ContentView: View {
             }
             .padding(.vertical, 10)
             .background(Color(UIColor.systemBackground).shadow(radius: 2))
+
+            
         }
         .edgesIgnoringSafeArea(.bottom)
     }

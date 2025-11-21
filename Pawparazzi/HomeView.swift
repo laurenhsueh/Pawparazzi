@@ -57,69 +57,69 @@ struct HomeView: View {
                                 
                                 // MARK: - Tags overlay
                                 if let tags = cat.tags, !tags.isEmpty {
-                                    HStack(spacing: 6) {
-                                        ForEach(Array(tags.keys.sorted()), id: \.self) { key in
-                                            if let value = tags[key] {
-                                                Text(value)
-                                                    .font(.caption)
-                                                    .padding(.horizontal, 8)
-                                                    .padding(.vertical, 4)
-                                                    .background(Color.black.opacity(0.6))
-                                                    .foregroundColor(.white)
-                                                    .cornerRadius(6)
+                                    VStack {
+                                        Spacer()
+                                        ScrollView(.horizontal) {
+                                            HStack(spacing: 8) {
+                                                ForEach(Array(tags.keys.sorted()), id: \.self) { key in
+                                                    if let value = tags[key] {
+                                                        Text(value)
+                                                            .tag()
+                                                    }
+                                                }
                                             }
+                                            .padding(8)
                                         }
-                                    }
-                                    .padding(20)
-                                    .background(
-                                        LinearGradient(
-                                            gradient: Gradient(colors: [.black.opacity(0.6), .black.opacity(0)]),
-                                            startPoint: .leading,
-                                            endPoint: .trailing
-                                        )
+                                        .frame(maxWidth: .infinity, alignment: .bottom)
                                         .mask(
-                                            HStack {
-                                                Spacer()
-                                                Rectangle()
-                                                    .frame(width: 50)
-                                            }
+                                            LinearGradient(
+                                                stops: [
+                                                        .init(color: .white, location: 0.0),  // far left
+                                                        .init(color: .white, location: 0.90),
+                                                        .init(color: .clear, location: 1.0)  // far right
+                                                    ],
+                                                startPoint: .leading,
+                                                endPoint: .trailing
+                                            )
                                         )
-                                    )
+                                    }
+                                    
                                 }
                                 
-                                // MARK: - Bottom actions
-                                HStack {
-                                    VStack(alignment: .leading, spacing: 8) {
-                                        HStack(spacing: 16) {
-                                            Image(systemName: "heart")
-                                            Text("24")
-                                            
-                                            Image(systemName: "bubble.right")
-                                            Text("5")
-                                            
-                                            Image(systemName: "square.and.arrow.up")
-                                        }
-                                        .font(.subheadline)
-                                        .foregroundColor(.white)
-                                    }
-                                    Spacer()
-                                    
-                                    // MARK: - Save Button
-                                    Button {
-                                        manager.selectedPhotoToSave = photoURL
-                                        manager.showingSaveToCollection = true
-                                    } label: {
-                                        Image(systemName: "bookmark")
-                                            .foregroundColor(.white)
-                                            .padding(6)
-                                            .background(Color.black.opacity(0.5))
-                                            .clipShape(RoundedRectangle(cornerRadius: 6))
-                                    }
-                                }
-                                .padding(8)
-                                .frame(maxHeight: .infinity, alignment: .bottom)
+                                
                             }
                             .padding(.horizontal, 8)
+                            
+                            // MARK: - Bottom actions
+                            HStack {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    HStack(spacing: 16) {
+                                        Image(systemName: "heart")
+                                        Text("24")
+                                        
+                                        Image(systemName: "bubble.right")
+                                        Text("5")
+                                        
+                                        Image(systemName: "square.and.arrow.up")
+                                    }
+                                    .font(.subheadline)
+                                    .foregroundColor(.black)
+                                }
+                                Spacer()
+                                
+                                // MARK: - Save Button
+                                Button {
+                                    manager.selectedPhotoToSave = photoURL
+                                    manager.showingSaveToCollection = true
+                                } label: {
+                                    Image(systemName: "bookmark")
+                                        .foregroundColor(.white)
+                                        .padding(6)
+                                        .background(Color.red.opacity(0.5))
+                                        .clipShape(RoundedRectangle(cornerRadius: 6))
+                                }
+                            }
+                            .padding(8)
                         }
                     }
                 }
