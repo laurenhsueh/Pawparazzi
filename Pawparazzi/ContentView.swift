@@ -1,52 +1,80 @@
-//
-//  ContentView.swift
-//  Pawparazzi
-//
-//  Created by Lauren Hsueh on 11/13/25.
-//
 import SwiftUI
 
-// MARK: - SwiftUI View
 struct ContentView: View {
-    @StateObject private var manager = SupabaseManager.shared
-    @State private var name = ""
-    @State private var color = ""
-    @State private var niceScore = 5
-    @State private var injured = false
+    @State private var selectedTab: String = "home"
     
     var body: some View {
-        NavigationView {
-            VStack(spacing: 20) {
-                TextField("Cat Name", text: $name)
-                    .textFieldStyle(.roundedBorder)
-                TextField("Color", text: $color)
-                    .textFieldStyle(.roundedBorder)
-                Stepper("Niceness: \(niceScore)", value: $niceScore, in: 1...10)
-                Toggle("Injured?", isOn: $injured)
-                
-                Button("Upload Cat") {
-                    Task {
-                        await manager.uploadCat(name: name, color: color, niceScore: niceScore, injured: injured)
-                    }
-                }
-                .buttonStyle(.borderedProminent)
-                
-                Divider()
-                
-                List(manager.cats) { cat in
-                    VStack(alignment: .leading) {
-                        Text(cat.name).font(.headline)
-                        Text("Color: \(cat.color)")
-                        Text("Nice: \(cat.nice_score) / 10")
-                        Text(cat.injured ? "🚨 Injured" : "✅ Healthy")
-                    }
+        VStack(spacing: 0) {
+            // MARK: - Main content
+            ZStack {
+                switch selectedTab {
+                case "home":
+                    HomeView()
+                case "explore":
+                    ExploreView()
+                case "post":
+                    PostView()
+                case "friends":
+                    FriendsView()
+                case "user":
+                    UserView()
+                default:
+                    HomeView()
                 }
             }
-            .padding()
-            .navigationTitle("Cat Tracker 🐱")
-            .task {
-                await manager.fetchCats()
+            .frame(maxWidth: .infinity, maxHeight: .infinity)
+            
+            // MARK: - Bottom Nav Bar
+            HStack {
+                NavBarButton(icon: "house", title: "Home", isSelected: selectedTab == "home") {
+                    selectedTab = "home"
+                }
+                
+                NavBarButton(icon: "magnifyingglass", title: "Explore", isSelected: selectedTab == "explore") {
+                    selectedTab = "explore"
+                }
+                
+                NavBarButton(icon: "plus.circle", title: "Post", isSelected: selectedTab == "post") {
+                    selectedTab = "post"
+                }
+                
+                NavBarButton(icon: "person.2", title: "Friends", isSelected: selectedTab == "friends") {
+                    selectedTab = "friends"
+                }
+                
+                NavBarButton(icon: "person.crop.circle", title: "User", isSelected: selectedTab == "user") {
+                    selectedTab = "user"
+                }
             }
+            .padding(.vertical, 10)
+            .background(Color(UIColor.systemBackground).shadow(radius: 2))
+        }
+        .edgesIgnoringSafeArea(.bottom)
+    }
+}
+
+// MARK: - NavBarButton
+struct NavBarButton: View {
+    let icon: String
+    let title: String
+    let isSelected: Bool
+    let action: () -> Void
+    
+    var body: some View {
+        Button(action: action) {
+            VStack(spacing: 4) {
+                Image(systemName: icon)
+                    .font(.system(size: 22))
+                    .foregroundColor(isSelected ? .blue : .gray)
+                Text(title)
+                    .font(.footnote)
+                    .foregroundColor(isSelected ? .blue : .gray)
+            }
+            .frame(maxWidth: .infinity)
         }
     }
+}
+
+#Preview {
+    ContentView()
 }
