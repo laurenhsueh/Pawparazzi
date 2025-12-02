@@ -58,15 +58,8 @@ struct TagOverlayView: View {
             .padding(.horizontal, 16)
             
             // Search Bar
-            HStack {
-                Image(systemName: "magnifyingglass")
-                    .foregroundColor(.red)
-                TextField("Search", text: $searchText)
-                    .font(.custom("Inter-Regular", size: 14))
-            }
-            .padding(8)
-            .background(RoundedRectangle(cornerRadius: 12).stroke(Color.gray.opacity(0.6)))
-            .padding(.horizontal, 16)
+            SearchBar(text: $searchText, placeholder: "Search tags…")
+                .padding(.horizontal, 12)
             
             // Scrollable tags
             ScrollView {

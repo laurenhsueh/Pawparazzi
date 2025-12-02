@@ -18,13 +18,9 @@ struct PostView: View {
     @State private var selectedPhotoData: Data?
     
     // MARK: - Tags
-    @State private var categorizedTags: [String: [String]] = [
-        "Breed": ["Siamese", "Persian", "Maine Coon", "Bengal", "Ragdoll", "Sphynx"],
-        "Color": ["Black", "White", "Gray", "Orange", "Spotted"],
-        "Status": ["Overfed", "Needs Medical", "Healthy", "Shy"],
-        "Personality": ["Playful", "Curious", "Friendly", "Calm", "Sleepy"]
-    ]
-    @State private var quickTags: [String] = ["Playful", "Overfed", "Needs Medical"]
+    @State private var categorizedTags: [String: [String]] = TagData.categorizedTags
+    @State private var quickTags: [String] = TagData.quickTags
+
     @State private var selectedTags: Set<String> = []
     
     @State private var showAllTagsOverlay: Bool = false
