@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct ExploreView: View {
-    @StateObject private var manager = SupabaseManager.shared
+    @StateObject private var store = CatStore.shared
     @State private var searchText: String = ""
     @State private var categorizedTags: [String: [String]] = TagData.categorizedTags
     @State private var quickTags: [String] = TagData.quickTags
@@ -10,7 +10,7 @@ struct ExploreView: View {
 
     var body: some View {
         if showingFilteredFeed, let tag = selectedFilterTag {
-            FilteredTagFeedView(tag: tag, cats: manager.cats) {
+            FilteredTagFeedView(tag: tag, cats: store.cats) {
                 // Back button tapped
                 showingFilteredFeed = false
                 selectedFilterTag = nil
@@ -36,8 +36,8 @@ struct ExploreView: View {
                                 .font(.custom("Inter-Regular", size: 14))
                                 .foregroundStyle(.primary)
                         Spacer()
-                        let allTags: [String] = manager.cats.flatMap { cat in
-                            cat.tags?.values.map { String($0) } ?? []
+                        let allTags: [String] = store.cats.flatMap { cat in
+                            cat.tags ?? []
                         }
                         let uniqueTags = Array(Set(allTags)).shuffled().prefix(3)  // 3 random tags
                         
@@ -51,7 +51,7 @@ struct ExploreView: View {
                     .padding(.horizontal, 16)
                     
                     // MARK: - Sections by Tag
-                    let catsByTag = groupCatsByTag(cats: manager.cats)
+                    let catsByTag = groupCatsByTag(cats: store.cats)
                     let tagList = catsByTag.keys.sorted()
                     
                     ForEach(tagList, id: \.self) { tag in
@@ -75,7 +75,7 @@ struct ExploreView: View {
                                 ScrollView(.horizontal, showsIndicators: false) {
                                     HStack(spacing: 12) {
                                         ForEach(catsByTag[tag] ?? []) { cat in
-                                            if let photoURL = cat.image_url,
+                                            if let photoURL = cat.imageUrl,
                                                let url = URL(string: photoURL) {
                                                 
                                                 AsyncImage(url: url) { image in
@@ -103,7 +103,7 @@ struct ExploreView: View {
                 }
                 .padding(.vertical)
                 .task {
-                    await manager.fetchCats()
+                    await store.refresh()
                 }
             }
         }
@@ -119,11 +119,11 @@ struct ExploreView: View {
     }
 
     // MARK: - Group cats by tag
-    private func groupCatsByTag(cats: [Cat]) -> [String: [Cat]] {
-        var dict: [String: [Cat]] = [:]
+    private func groupCatsByTag(cats: [CatModel]) -> [String: [CatModel]] {
+        var dict: [String: [CatModel]] = [:]
         for cat in cats {
             guard let tags = cat.tags else { continue }
-            for tag in tags.values {
+            for tag in tags {
                 dict[tag, default: []].append(cat)
             }
         }

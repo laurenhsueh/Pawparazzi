@@ -8,13 +8,13 @@ import SwiftUI
 
 struct FilteredTagFeedView: View {
     let tag: String
-    let cats: [Cat]
+    let cats: [CatModel]
     let onBack: () -> Void   // callback for back button
     
     @State private var searchText: String = ""
     
-    var filteredCats: [Cat] {
-        cats.filter { $0.tags?.values.contains(tag) ?? false }
+    var filteredCats: [CatModel] {
+        cats.filter { $0.tags?.contains(tag) ?? false }
     }
     
     // Generate random heights for each cat (80 or 160)
@@ -47,8 +47,8 @@ struct FilteredTagFeedView: View {
                     let columns = 3
                     
                     // Split images into 3 columns
-                    let columnedCats: [[Cat]] = {
-                        var temp = Array(repeating: [Cat](), count: columns)
+                    let columnedCats: [[CatModel]] = {
+                        var temp = Array(repeating: [CatModel](), count: columns)
                         for (index, cat) in filteredCats.enumerated() {
                             temp[index % columns].append(cat)
                         }
@@ -58,7 +58,7 @@ struct FilteredTagFeedView: View {
                     ForEach(0..<columns, id: \.self) { colIndex in
                         VStack(spacing: 4) {
                             ForEach(columnedCats[colIndex]) { cat in
-                                if let photoURL = cat.image_url, let url = URL(string: photoURL) {
+                                if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
                                     AsyncImage(url: url) { image in
                                         image
                                             .resizable()

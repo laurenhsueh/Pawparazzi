@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct PostCard: View {
-    let cat: Cat
+    let cat: CatModel
 
     private let contentWidth = UIScreen.main.bounds.width - 70
     private let contentHeight: CGFloat = 400
@@ -24,7 +24,7 @@ struct PostCard: View {
                             .fill(AppColors.secondarySystemBackground)
                             .frame(width: 36, height: 36)
 
-                        Text("username")
+                        Text("@\(cat.username)")
                             .font(.custom("Slabo13px-Regular", size: 14))
                             .foregroundStyle(AppColors.accent)
                     }
@@ -32,10 +32,8 @@ struct PostCard: View {
                     Spacer()
 
                     // Date pill
-                    if let created = cat.created_at,
-                       let date = ISO8601DateFormatter().date(from: created) {
-
-                        Text(date.formatted(.dateTime.month(.abbreviated).day()))
+                    if let created = cat.createdAt {
+                        Text(created.formatted(.dateTime.month(.abbreviated).day()))
                             .font(.custom("Inter-Regular", size: 14))
                             .padding(.horizontal, 12)
                             .padding(.vertical, 4)
@@ -69,7 +67,7 @@ struct PostCard: View {
                 }
 
                 // MARK: - Image + tags
-                if let photoURL = cat.image_url, let url = URL(string: photoURL) {
+                if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
                     ZStack(alignment: .bottomLeading) {
                         AsyncImage(url: url) { image in
                             image
@@ -89,11 +87,9 @@ struct PostCard: View {
                         if let tags = cat.tags, !tags.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
-                                    ForEach(Array(tags.keys.sorted()), id: \.self) { key in
-                                        if let value = tags[key] {
-                                            Text(value)
-                                                .tag()
-                                        }
+                                    ForEach(tags, id: \.self) { value in
+                                        Text(value)
+                                            .tag()
                                     }
                                 }
                                 .padding(10)
@@ -119,7 +115,7 @@ struct PostCard: View {
 
                     HStack(spacing: 6) {
                         Image(systemName: "heart")
-                        Text("24")
+                        Text("\(cat.likes)")
                     }
 
                     HStack(spacing: 6) {
@@ -130,8 +126,8 @@ struct PostCard: View {
 
                     // Save button
                     Button {
-                        SupabaseManager.shared.selectedPhotoToSave = cat.image_url
-                        SupabaseManager.shared.showingSaveToCollection = true
+                        CatStore.shared.selectedPhotoToSave = cat.imageUrl
+                        CatStore.shared.showingSaveToCollection = true
                     } label: {
                         Image("PawIcon")
                             .padding(6)

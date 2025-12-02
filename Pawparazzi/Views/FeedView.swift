@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct FeedView: View {
-    @StateObject private var manager = SupabaseManager.shared
+    @StateObject private var store = CatStore.shared
     
     var body: some View {
         VStack(spacing: 0) {
@@ -24,14 +24,14 @@ struct FeedView: View {
             // MARK: - Feed Scroll
             ScrollView {
                 LazyVStack(spacing: 24) {
-                    ForEach(manager.cats) { cat in
+                    ForEach(store.cats) { cat in
                         PostCard(cat: cat)
                     }
                 }
                 .padding(.vertical, 12)
             }
             .task {
-                await manager.fetchCats()
+                await store.refresh()
             }
         }
         .background(AppColors.background)

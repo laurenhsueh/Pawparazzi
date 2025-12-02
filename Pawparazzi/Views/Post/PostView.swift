@@ -10,7 +10,7 @@ import PhotosUI
 import CoreLocation
 
 struct PostView: View {
-    @StateObject private var manager = SupabaseManager.shared
+    @StateObject private var store = CatStore.shared
     @StateObject private var locationManager = LocationManager()
     private let cardWidth = UIScreen.main.bounds.width - 32
     
@@ -32,9 +32,6 @@ struct PostView: View {
     // MARK: - Cat Info
     @State private var catName: String = ""
     
-    // MARK: - Upload State
-    @State private var isUploading: Bool = false
-    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -51,16 +48,23 @@ struct PostView: View {
                             await postCat()
                         }
                     } label: {
-                        Text(isUploading ? "Uploading..." : "Post")
+                        Text(store.isPosting ? "Uploading..." : "Post")
                             .font(.custom("Inter-Regular", size: 18))
                             .foregroundStyle(AppColors.accent)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .cornerRadius(12)
                     }
-                    .disabled(catName.isEmpty || selectedPhotoData == nil || isUploading)
+                    .disabled(catName.isEmpty || selectedPhotoData == nil || store.isPosting)
                 }
                 .padding(.horizontal, 24)
+
+                if let error = store.postingError, !error.isEmpty {
+                    Text(error)
+                        .font(.custom("Inter-Regular", size: 14))
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 24)
+                }
                 
                 // MARK: - Card
                 VStack(alignment: .leading, spacing: 16) {
@@ -180,30 +184,25 @@ struct PostView: View {
     
     private func postCat() async {
         guard let photoData = selectedPhotoData else { return }
-        isUploading = true
-        
-        var tagsDict: [String: String] = [:]
-        for category in categorizedTags.keys {
-            if let tag = categorizedTags[category]?.first(where: { selectedTags.contains($0) }) {
-                tagsDict[category.lowercased()] = tag
-            }
-        }
-        
-        await manager.createCatWithPhotos(
+        let base64 = photoData.base64EncodedString()
+
+        let tags = Array(selectedTags)
+
+        await store.postCat(
             name: catName,
             description: descriptionText,
-            location: locationManager.city.isEmpty ? customLocation : locationManager.city,
-            tags: tagsDict,
-            imageDataArray: [photoData]
+            tags: tags,
+            location: nil,
+            imageBase64: base64
         )
-        
-        // Reset form
-        catName = ""
-        selectedPhotoData = nil
-        selectedTags = []
-        descriptionText = "Write a description..."
-        customLocation = ""
-        isUploading = false
+
+        if store.postingError == nil {
+            catName = ""
+            selectedPhotoData = nil
+            selectedTags = []
+            descriptionText = "Write a description..."
+            customLocation = ""
+        }
     }
 }
 
