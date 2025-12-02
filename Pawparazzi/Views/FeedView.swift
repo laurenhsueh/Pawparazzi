@@ -6,7 +6,6 @@
 //
 //
 import SwiftUI
-import SwiftUI
 
 struct FeedView: View {
     @StateObject private var manager = SupabaseManager.shared
