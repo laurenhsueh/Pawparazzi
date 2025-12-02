@@ -38,9 +38,22 @@
 		5026DD9B2EC6583B001F8CA9 /* PawparazziUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = PawparazziUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		50862D862EDE5B9000A2C1BE /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 5026DD832EC65839001F8CA9 /* Pawparazzi */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		5026DD862EC65839001F8CA9 /* Pawparazzi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				50862D862EDE5B9000A2C1BE /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */,
+			);
 			path = Pawparazzi;
 			sourceTree = "<group>";
 		};
@@ -432,6 +445,7 @@
 				DEVELOPMENT_TEAM = 8JP4JC6GL4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pawparazzi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -460,6 +474,7 @@
 				DEVELOPMENT_TEAM = 8JP4JC6GL4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Pawparazzi/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;

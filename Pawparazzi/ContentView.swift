@@ -1,57 +1,77 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab: String = "home"
+    @State private var selectedTab: String = "feed"
+
     
     var body: some View {
         VStack(spacing: 0) {
             // MARK: - Main content
             ZStack {
                 switch selectedTab {
-                case "home":
-                    HomeView()
-                case "explore":
-                    ExploreView()
-                case "post":
-                    PostView()
-                case "friends":
-                    FriendsView()
-                case "user":
-                    UserView()
-                default:
-                    HomeView()
+                case "feed": FeedView()
+                case "explore": ExploreView()
+                case "post": PostView()
+                case "friends": FriendsView()
+                case "user": UserView()
+                default: FeedView()
                 }
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             // MARK: - Bottom Nav Bar
-            HStack {
-                NavBarButton(icon: "house", title: "Home", isSelected: selectedTab == "home") {
-                    selectedTab = "home"
+            ZStack {
+                Color(UIColor.systemBackground).shadow(radius: 2)
+                
+                GeometryReader { geo in
+                    let tabWidth = geo.size.width / 5
+                    
+                    // Red pill indicator
+                    RoundedRectangle(cornerRadius: 12)
+                        .fill(Color("Secondary"))
+                        .frame(width: tabWidth * 0.6, height: 4)
+                        .offset(x: tabOffset(selectedTab: selectedTab, tabWidth: tabWidth), y: 0)
+                        .animation(.easeInOut(duration: 0.3), value: selectedTab)
+                        .frame(maxHeight: .infinity, alignment: .top)
                 }
                 
-                NavBarButton(icon: "magnifyingglass", title: "Explore", isSelected: selectedTab == "explore") {
-                    selectedTab = "explore"
-                }
-                
-                NavBarButton(icon: "plus.circle", title: "Post", isSelected: selectedTab == "post") {
-                    selectedTab = "post"
-                }
-                
-                NavBarButton(icon: "person.2", title: "Friends", isSelected: selectedTab == "friends") {
-                    selectedTab = "friends"
-                }
-                
-                NavBarButton(icon: "person.crop.circle", title: "User", isSelected: selectedTab == "user") {
-                    selectedTab = "user"
+                HStack(spacing: 0) {
+                    NavBarButton(icon: "FeedIcon", title: "Feed", isSelected: selectedTab == "feed") {
+                        withAnimation { selectedTab = "feed" }
+                    }
+                    
+                    NavBarButton(icon: "SearchIcon", title: "Explore", isSelected: selectedTab == "explore") {
+                        withAnimation { selectedTab = "explore" }
+                    }
+                    
+                    NavBarButton(icon: "PostIcon", title: "Post", isSelected: selectedTab == "post") {
+                        withAnimation { selectedTab = "post" }
+                    }
+                    
+                    NavBarButton(icon: "FriendsIcon", title: "Friends", isSelected: selectedTab == "friends") {
+                        withAnimation { selectedTab = "friends" }
+                    }
+                    
+                    NavBarButton(icon: "UserIcon", title: "User", isSelected: selectedTab == "user") {
+                        withAnimation { selectedTab = "user" }
+                    }
                 }
             }
-            .padding(.vertical, 10)
-            .background(Color(UIColor.systemBackground).shadow(radius: 2))
-
-            
+            .frame(height: 60)
         }
         .edgesIgnoringSafeArea(.bottom)
+    }
+    
+    // MARK: - Calculate pill offset
+    func tabOffset(selectedTab: String, tabWidth: CGFloat) -> CGFloat {
+        switch selectedTab {
+        case "feed": return tabWidth * 0 + (tabWidth * 0.2)
+        case "explore": return tabWidth * 1 + (tabWidth * 0.2)
+        case "post": return tabWidth * 2 + (tabWidth * 0.2)
+        case "friends": return tabWidth * 3 + (tabWidth * 0.2)
+        case "user": return tabWidth * 4 + (tabWidth * 0.2)
+        default: return 0
+        }
     }
 }
 
@@ -65,12 +85,19 @@ struct NavBarButton: View {
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                Image(systemName: icon)
-                    .font(.system(size: 22))
-                    .foregroundColor(isSelected ? .blue : .gray)
+                Image(icon)
+                    .renderingMode(icon == "UserIcon" ? .original : .template)
+                    .foregroundStyle(
+                        icon == "UserIcon"
+                        ? .primary
+                        : (isSelected ? Color("Secondary") : .black.opacity(0.8))
+                    )
+
                 Text(title)
-                    .font(.footnote)
-                    .foregroundColor(isSelected ? .blue : .gray)
+                    .font(.custom("Inter-Regular", size: 10))
+                    .foregroundStyle(
+                        isSelected ? Color("Secondary") : .black.opacity(0.8)
+                    )
             }
             .frame(maxWidth: .infinity)
         }

@@ -24,6 +24,7 @@ struct NewCat: Encodable {
     let location: String?
     let description: String
     let tags: [String: String]
+    let created_at: String   // <-- add this
 }
 
 struct NewCatPhoto: Codable {
@@ -61,7 +62,8 @@ class SupabaseManager: ObservableObject {
                 name: name,
                 location: location,
                 description: description,
-                tags: tags
+                tags: tags,
+                created_at: ISO8601DateFormatter().string(from: Date())
             )
             
             let insertedCats: [Cat] = try await supabase
