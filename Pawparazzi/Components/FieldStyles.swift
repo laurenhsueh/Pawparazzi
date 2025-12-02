@@ -23,14 +23,14 @@ struct PasswordField: View {
             
             Button(action: { isHidden.toggle() }) {
                 Image(systemName: isHidden ? "eye.slash" : "eye")
-                    .foregroundColor(.gray)
+                    .foregroundStyle(AppColors.mutedText)
             }
         }
         .padding(.horizontal, 12)
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.6))
+                .stroke(AppColors.fieldBorder)
         )
         .padding(.horizontal, 16)
     }
@@ -43,7 +43,7 @@ extension View {
             .font(.custom("Inter-Regular", size: 14))
             .background(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Color.gray.opacity(0.6))
+                    .stroke(AppColors.fieldBorder)
             )
             .padding(.horizontal, 16)
     }

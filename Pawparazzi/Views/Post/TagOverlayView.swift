@@ -27,7 +27,7 @@ struct TagOverlayView: View {
                 cardView
                     .frame(height: UIScreen.main.bounds.height * 0.85)
                     .frame(maxWidth: .infinity)
-                    .background(Color.white)
+                    .background(AppColors.cardBackground)
                     .cornerRadius(20, corners: [.topLeft, .topRight])
             }
             .ignoresSafeArea(edges: .bottom)
@@ -43,13 +43,13 @@ struct TagOverlayView: View {
             HStack {
                 Text("Select Tags")
                     .font(.custom("AnticDidone-Regular", size: 24))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
                 
                 Spacer()
                 
                 Button(action: { showOverlay = false }) {
                     Image(systemName: "xmark")
-                        .foregroundColor(.black)
+                        .foregroundStyle(.primary)
                         .font(.system(size: 20, weight: .semibold))
                         .padding(8) // easier tap target
                 }
@@ -100,7 +100,7 @@ struct TagOverlayView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red)
+                    .background(AppColors.primaryAction)
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
                     .padding(.bottom, 16)

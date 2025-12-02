@@ -23,7 +23,6 @@ struct ExploreView: View {
                     Text("Find some cats")
                         .font(.custom("AnticDidone-Regular", size: 40))
                         .padding(.horizontal, 16)
-                        .padding(.top, 24)
                     
                     // MARK: - Search Bar
                     SearchBar(text: $searchText, placeholder: "The most stinky cat")
@@ -33,7 +32,9 @@ struct ExploreView: View {
                         
                         Text("Explore")
                             .font(.custom("Inter-Regular", size: 14))
-                            .foregroundColor(.black)
+                            .foregroundStyle(.primary)
+                                .font(.custom("Inter-Regular", size: 14))
+                                .foregroundStyle(.primary)
                         Spacer()
                         let allTags: [String] = manager.cats.flatMap { cat in
                             cat.tags?.values.map { String($0) } ?? []

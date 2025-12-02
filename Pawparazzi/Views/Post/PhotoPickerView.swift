@@ -30,14 +30,14 @@ struct PhotoPickerView: View {
                         .cornerRadius(4)
                 } else {
                     Rectangle()
-                        .fill(Color(.black.opacity(0.05)))
+                        .fill(AppColors.secondarySystemBackground)
                         .frame(width: cardWidth, height: cardWidth)
                     VStack(spacing: 16) {
                         Image(systemName: "camera")
                             .font(.system(size: 50))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(AppColors.mutedText)
                         Text("Tap to add photo")
-                            .foregroundColor(.gray)
+                            .foregroundStyle(AppColors.mutedText)
                             .font(.custom("Inter-Regular", size: 14))
                     }
                 }

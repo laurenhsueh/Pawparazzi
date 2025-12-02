@@ -26,7 +26,7 @@ struct SetupProfileView: View {
                     else { step -= 1 }
                 }) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundStyle(.primary)
                         .font(.system(size: 20, weight: .medium))
                 }
                 Spacer()
@@ -43,7 +43,7 @@ struct SetupProfileView: View {
             HStack(spacing: 8) {
                 ForEach(1...3, id: \.self) { index in
                     Circle()
-                        .fill(step == index ? Color.gray.opacity(0.9) : Color.gray.opacity(0.3))
+                        .fill(step == index ? AppColors.mutedText : AppColors.mutedText.opacity(0.3))
                         .frame(width: 10, height: 10)
                 }
             }
@@ -72,7 +72,7 @@ struct SetupProfileView: View {
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color("Secondary"))
+                    .background(AppColors.accent)
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
             }
@@ -107,12 +107,12 @@ struct SetupProfileView: View {
                     .clipped()
             } else {
                 Circle()
-                    .fill(Color(.secondarySystemFill))
+                    .fill(AppColors.secondarySystemBackground)
                     .frame(width: 160, height: 160)
                     .overlay(
                         Text("Add Photo")
                             .font(.custom("Inter-Regular", size: 14))
-                            .foregroundColor(.gray)
+                            .foregroundStyle(AppColors.mutedText)
                     )
             }
             
@@ -120,7 +120,7 @@ struct SetupProfileView: View {
                 showingImagePicker = true
             }
             .font(.custom("Inter-Regular", size: 16))
-            .foregroundColor(Color("Secondary"))
+            .foregroundColor(AppColors.accent)
         }
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $model.profileImage)

@@ -21,7 +21,7 @@ struct LoginView: View {
             HStack {
                 Button(action: back) {   // Uses closure
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                    .foregroundStyle(.primary)
                         .font(.system(size: 20, weight: .medium))
                 }
                 Spacer()
@@ -50,7 +50,7 @@ struct LoginView: View {
                     .font(.custom("Inter-Regular", size: 14))
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color.red)
+                    .background(AppColors.primaryAction)
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
@@ -58,19 +58,19 @@ struct LoginView: View {
             
             // MARK: - Divider and Sign Up
             HStack {
-                Rectangle().fill(Color.gray.opacity(0.4)).frame(height: 1)
-                Text("or").foregroundColor(.gray)
-                Rectangle().fill(Color.gray.opacity(0.4)).frame(height: 1)
+            Rectangle().fill(AppColors.divider).frame(height: 1)
+            Text("or").foregroundStyle(AppColors.mutedText)
+            Rectangle().fill(AppColors.divider).frame(height: 1)
             }
             .padding(.horizontal, 16)
             
             HStack {
                 Text("Don't have an account?")
-                    .foregroundColor(.gray)
+                .foregroundStyle(AppColors.mutedText)
                     .font(.custom("Inter-Regular", size: 12))
                 Button(action: goToSignUp) {
                     Text("Sign up")
-                        .foregroundColor(.red)
+                    .foregroundColor(AppColors.primaryAction)
                         .fontWeight(.semibold)
                         .font(.custom("Inter-Regular", size: 12))
                 }

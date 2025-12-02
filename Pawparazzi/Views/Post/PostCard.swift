@@ -21,12 +21,12 @@ struct PostCard: View {
                     // Username + profile circle
                     HStack(spacing: 12) {
                         Circle()
-                            .fill(Color.gray.opacity(0.3))
+                            .fill(AppColors.secondarySystemBackground)
                             .frame(width: 36, height: 36)
 
                         Text("username")
                             .font(.custom("Slabo13px-Regular", size: 14))
-                            .foregroundStyle(Color("Secondary"))
+                            .foregroundStyle(AppColors.accent)
                     }
 
                     Spacer()
@@ -48,7 +48,7 @@ struct PostCard: View {
                                         topTrailing: 0
                                     )
                                 )
-                                .fill(Color("Secondary"))
+                                    .fill(AppColors.accent)
                             )
                             .foregroundColor(.white)
                             .offset(x: 18)
@@ -59,13 +59,13 @@ struct PostCard: View {
                 // MARK: - Cat name
                 Text(cat.name)
                     .font(.custom("AnticDidone-Regular", size: 28))
-                    .foregroundStyle(.black)
+                    .foregroundStyle(.primary)
 
                 // MARK: - Description
                 if let desc = cat.description, !desc.isEmpty {
                     Text(desc)
                         .font(.custom("Inter-Regular", size: 14))
-                        .foregroundStyle(.black.opacity(0.75))
+                        .foregroundStyle(AppColors.mutedText)
                 }
 
                 // MARK: - Image + tags
@@ -138,16 +138,16 @@ struct PostCard: View {
                     }
                 }
                 .font(.custom("Inter-Regular", size: 14))
-                .foregroundStyle(.black.opacity(0.9))
+                .foregroundStyle(.primary)
 
             }
             .frame(width: contentWidth)
         }
         .padding(16)
         .frame(maxWidth: .infinity)
-        .background(.white)
+        .background(AppColors.cardBackground)
         .clipShape(RoundedRectangle(cornerRadius: 4))
-        .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+        .shadow(color: AppColors.cardShadow, radius: 5, x: 0, y: 2)
         .padding(.horizontal, 16)
     }
 }

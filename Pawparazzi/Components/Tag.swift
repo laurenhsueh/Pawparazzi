@@ -22,9 +22,9 @@ struct Tag: ViewModifier {
                         topTrailing: 8
                     )
                 )
-                .fill(Color.white)
+                .fill(AppColors.cardBackground)
             )
-            .foregroundStyle(Color.black.opacity(0.6))
+            .foregroundStyle(AppColors.mutedText)
     }
 }
 
@@ -51,7 +51,7 @@ struct TagOutline: ViewModifier {
                         topTrailing: 8
                     )
                 )
-                .fill(Color.white)
+                .fill(AppColors.cardBackground)
             )
             .overlay(
                 UnevenRoundedRectangle(
@@ -62,9 +62,9 @@ struct TagOutline: ViewModifier {
                         topTrailing: 8
                     )
                 )
-                .stroke(isSelected ? Color.red : Color.gray.opacity(0.6), lineWidth: 1)
+                .stroke(isSelected ? AppColors.accent : AppColors.fieldBorder, lineWidth: 1)
             )
-            .foregroundColor(.black)
+            .foregroundStyle(.primary)
     }
 }
 
@@ -84,7 +84,7 @@ struct TagBox: View {
         Text(tag)
             .font(.subheadline)
             .padding(8)
-            .background(isSelected ? Color.blue.opacity(0.7) : Color(.systemGray5))
+            .background(isSelected ? AppColors.accent : AppColors.accentSoftBackground)
             .foregroundColor(isSelected ? .white : .primary)
             .cornerRadius(10)
             .onTapGesture { action() }

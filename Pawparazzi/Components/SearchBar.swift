@@ -19,7 +19,7 @@ struct SearchBar: View {
     var body: some View {
         HStack(spacing: 8) {
             Image(systemName: "magnifyingglass")
-                .foregroundColor(.red)
+                .foregroundStyle(AppColors.accent)
 
             TextField(placeholder, text: $text)
                 .font(.custom("Inter-Regular", size: 14))
@@ -30,14 +30,18 @@ struct SearchBar: View {
             if !text.isEmpty {
                 Button(action: { text = "" }) {
                     Image(systemName: "xmark.circle.fill")
-                        .foregroundColor(.gray.opacity(0.6))
+                        .foregroundStyle(AppColors.mutedText)
                 }
             }
         }
         .padding(8)
         .background(
             RoundedRectangle(cornerRadius: 12)
-                .stroke(Color.gray.opacity(0.6))
+                .fill(AppColors.secondarySystemBackground)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 12)
+                        .stroke(AppColors.fieldBorder)
+                )
         )
         .padding(.horizontal, 16)
     }

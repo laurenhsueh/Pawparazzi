@@ -14,14 +14,14 @@ struct DescriptionEditor: View {
         ZStack(alignment: .topLeading) {
             if text.isEmpty {
                 Text(placeholder)
-                    .foregroundColor(.gray.opacity(0.7))
+                    .foregroundStyle(AppColors.mutedText)
                     .padding(4)
                     .font(.custom("Inter-Regular", size: 14))
             }
             
             TextEditor(text: $text)
                 .font(.custom("Inter-Regular", size: 14))
-                .foregroundColor(.black)
+                .foregroundStyle(.primary)
                 .padding(4)
                 .frame(height: 120)
                 .cornerRadius(8)

@@ -21,7 +21,7 @@ struct UserView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 80, height: 80)
-                        .foregroundColor(.gray)
+                        .foregroundStyle(AppColors.mutedText)
                     
                     VStack(alignment: .leading, spacing: 8) {
                         Text(username)
@@ -63,7 +63,7 @@ struct UserView: View {
                                                     .cornerRadius(10)
                                             } placeholder: {
                                                 Rectangle()
-                                                    .fill(Color.gray.opacity(0.3))
+                                                    .fill(AppColors.secondarySystemBackground)
                                                     .frame(width: 120, height: 120)
                                                     .cornerRadius(10)
                                                     .overlay(ProgressView())

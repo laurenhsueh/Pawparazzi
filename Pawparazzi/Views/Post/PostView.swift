@@ -45,7 +45,6 @@ struct PostView: View {
                         .font(.custom("AnticDidone-Regular", size: 40))
                         .frame(maxWidth: .infinity, alignment: .leading)
                         .padding(.horizontal, 16)
-                        .padding(.top, 24)
                     
                     Button {
                         Task {
@@ -54,7 +53,7 @@ struct PostView: View {
                     } label: {
                         Text(isUploading ? "Uploading..." : "Post")
                             .font(.custom("Inter-Regular", size: 18))
-                            .foregroundStyle(Color("Secondary"))
+                            .foregroundStyle(AppColors.accent)
                             .padding(.horizontal, 16)
                             .padding(.vertical, 8)
                             .cornerRadius(12)
@@ -73,13 +72,13 @@ struct PostView: View {
                     ZStack(alignment: .leading) {
                         if catName.isEmpty {
                             Text("Give a name...")
-                                .foregroundColor(.black)
+                                .foregroundStyle(AppColors.mutedText)
                                 .font(.custom("AnticDidone-Regular", size: 32))
                                 .padding(.vertical, 4)
                         }
                         TextField("", text: $catName)
                             .font(.custom("AnticDidone-Regular", size: 32))
-                            .foregroundColor(.black)
+                            .foregroundStyle(.primary)
                             .textFieldStyle(.plain)
                             .padding(.vertical, 4)
                     }
@@ -127,7 +126,7 @@ struct PostView: View {
                                     showAllTagsOverlay = true
                                 }
                                 .font(.custom("Inter-Regular", size: 14))
-                                .foregroundColor(.black)
+                                .foregroundStyle(.primary)
                             }
                         }
                     }
@@ -154,14 +153,14 @@ struct PostView: View {
                 }
                 .padding(16)
                 .frame(width: cardWidth)
-                .background(Color.white)
+                .background(AppColors.cardBackground)
                 .cornerRadius(12)
-                .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
+                .shadow(color: AppColors.cardShadow, radius: 5, x: 0, y: 2)
                 
             }
         }
         .padding(.vertical, 16)
-        .background(Color.gray.opacity(0.05))
+        .background(AppColors.background)
         .overlay {
             if showAllTagsOverlay {
                 TagOverlayView(

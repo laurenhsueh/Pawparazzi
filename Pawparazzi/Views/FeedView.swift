@@ -18,7 +18,7 @@ struct FeedView: View {
                 .font(.custom("AnticDidone-Regular", size: 40))
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .padding(.horizontal, 24)
-                .padding(.top, 24)
+                .padding(.top, 16)
                 .padding(.bottom, 8)
 
             // MARK: - Feed Scroll
@@ -34,7 +34,7 @@ struct FeedView: View {
                 await manager.fetchCats()
             }
         }
-        .background(Color.gray.opacity(0.05))
+        .background(AppColors.background)
     }
 }
 #Preview {

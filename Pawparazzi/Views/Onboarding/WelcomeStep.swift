@@ -20,7 +20,7 @@ struct WelcomeStep: View {
                 
                 Text("Get ready to take pics of cats 🐾")
                     .font(.custom("Inter-Regular", size: 16))
-                    .foregroundColor(.gray)
+                    .foregroundStyle(AppColors.mutedText)
             }
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 16)
@@ -29,7 +29,7 @@ struct WelcomeStep: View {
                 Text("Get Started")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .background(Color("Secondary"))
+                    .background(AppColors.accent)
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
@@ -39,10 +39,10 @@ struct WelcomeStep: View {
                 Text("I already have an account")
                     .frame(maxWidth: .infinity)
                     .padding()
-                    .foregroundColor(.red)
+                    .foregroundColor(AppColors.primaryAction)
                     .overlay(
                         RoundedRectangle(cornerRadius: 12)
-                            .stroke(Color.red, lineWidth: 2)
+                            .stroke(AppColors.primaryAction, lineWidth: 2)
                     )
             }
             .padding(16)

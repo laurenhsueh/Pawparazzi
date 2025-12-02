@@ -20,7 +20,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             // MARK: - Bottom Nav Bar
-            ZStack {
+            ZStack (alignment: .top) {
                 Color(UIColor.systemBackground).shadow(radius: 2)
                 
                 GeometryReader { geo in
@@ -28,7 +28,7 @@ struct ContentView: View {
                     
                     // Red pill indicator
                     RoundedRectangle(cornerRadius: 12)
-                        .fill(Color("Secondary"))
+                        .fill(AppColors.accent)
                         .frame(width: tabWidth * 0.6, height: 4)
                         .offset(x: tabOffset(selectedTab: selectedTab, tabWidth: tabWidth), y: 0)
                         .animation(.easeInOut(duration: 0.3), value: selectedTab)
@@ -55,10 +55,11 @@ struct ContentView: View {
                     NavBarButton(icon: "UserIcon", title: "User", isSelected: selectedTab == "user") {
                         withAnimation { selectedTab = "user" }
                     }
-                }
+                }.padding(.top, 16)
             }
-            .frame(height: 60)
+            .frame(height: 80)
         }
+        .background(AppColors.background)
         .edgesIgnoringSafeArea(.bottom)
     }
     
@@ -90,13 +91,13 @@ struct NavBarButton: View {
                     .foregroundStyle(
                         icon == "UserIcon"
                         ? .primary
-                        : (isSelected ? Color("Secondary") : .black.opacity(0.8))
+                        : (isSelected ? AppColors.accent : AppColors.mutedText)
                     )
 
                 Text(title)
                     .font(.custom("Inter-Regular", size: 10))
                     .foregroundStyle(
-                        isSelected ? Color("Secondary") : .black.opacity(0.8)
+                        isSelected ? AppColors.accent : AppColors.mutedText
                     )
             }
             .frame(maxWidth: .infinity)

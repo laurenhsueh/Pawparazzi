@@ -28,7 +28,7 @@ struct FilteredTagFeedView: View {
             HStack(spacing: 12) {
                 Button(action: onBack) {
                     Image(systemName: "chevron.left")
-                        .foregroundColor(.black)
+                        .foregroundStyle(.primary)
                         .font(.system(size: 18, weight: .medium))
                 }
                 SearchBar(text: $searchText, placeholder: "Search \(tag) cats")
@@ -80,7 +80,7 @@ struct FilteredTagFeedView: View {
                 .padding(4)
             }
         }
-        .background(Color(.systemBackground))
+        .background(AppColors.background)
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
     }
