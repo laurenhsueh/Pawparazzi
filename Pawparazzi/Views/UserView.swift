@@ -2,11 +2,7 @@ import SwiftUI
 
 struct UserView: View {
     @StateObject private var manager = CatStore.shared
-    
-    // Static demo data for now – these can be wired up to real user data later.
-    private let username: String = "@catspotter_"
-    private let memberSince: String = "March 2024"
-    private let location: String = "Los Angeles, CA"
+    @StateObject private var userStore = UserStore.shared
     
     var body: some View {
         ScrollView {
@@ -20,13 +16,16 @@ struct UserView: View {
                     Spacer()
                     
                     Button(action: {
-                        // Settings action placeholder
+                        Task {
+                            await userStore.loadProfile()
+                        }
                     }) {
-                        Image(systemName: "gearshape")
+                        Image(systemName: "arrow.clockwise")
                             .font(.system(size: 20, weight: .semibold))
                             .foregroundStyle(.primary)
                     }
                     .buttonStyle(.plain)
+                    .disabled(userStore.isLoading)
                 }
                 .padding(.top, 24)
                 
@@ -48,12 +47,27 @@ struct UserView: View {
                                     )
                                 )
                             
-                            // Optional initial or icon overlay can go here later.
+                            if let urlString = userStore.profile?.avatarUrl,
+                               let url = URL(string: urlString) {
+                                AsyncImage(url: url) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                } placeholder: {
+                                    ProgressView()
+                                }
+                                .clipShape(Circle())
+                            } else {
+                                Text(displayInitials)
+                                    .font(.custom("Inter-Regular", size: 32))
+                                    .fontWeight(.bold)
+                                    .foregroundStyle(.white)
+                            }
                         }
                         .frame(width: 84, height: 84)
                         
                         VStack(alignment: .leading, spacing: 8) {
-                            Text(username)
+                            Text(displayUsername)
                                 .font(.custom("Inter-Regular", size: 20))
                                 .fontWeight(.semibold)
                             
@@ -63,22 +77,39 @@ struct UserView: View {
                                         .font(.system(size: 14))
                                         .foregroundStyle(AppColors.mutedText)
                                     
-                                    Text(location)
+                                    Text(userStore.profile?.location ?? "Location unknown")
                                         .font(.custom("Inter-Regular", size: 14))
                                         .foregroundStyle(AppColors.mutedText)
                                 }
                                 
                                 HStack(spacing: 8) {
-                                    Image(systemName: "calendar")
+                                    Image(systemName: "text.justify.left")
                                         .font(.system(size: 14))
                                         .foregroundStyle(AppColors.mutedText)
                                     
-                                    Text("Member since \(memberSince)")
+                                    Text(userStore.profile?.bio ?? "Add a short bio to share your vibe.")
                                         .font(.custom("Inter-Regular", size: 14))
                                         .foregroundStyle(AppColors.mutedText)
+                                        .lineLimit(2)
                                 }
                             }
                         }
+                    }
+                    
+                    if let email = userStore.profile?.email {
+                        HStack {
+                            Image(systemName: "envelope")
+                                .foregroundStyle(AppColors.mutedText)
+                            Text(email)
+                                .font(.custom("Inter-Regular", size: 14))
+                                .foregroundStyle(AppColors.mutedText)
+                        }
+                    }
+                    
+                    if let error = userStore.errorMessage {
+                        Text(error)
+                            .font(.custom("Inter-Regular", size: 12))
+                            .foregroundColor(.red)
                     }
                     
                     // Collections header
@@ -121,8 +152,31 @@ struct UserView: View {
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 32)
+            .task {
+                await userStore.loadProfile()
+            }
         }
         .background(AppColors.background.ignoresSafeArea())
+        .overlay {
+            if userStore.isLoading {
+                ProgressView()
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
+            }
+        }
+    }
+    
+    private var displayUsername: String {
+        guard let username = userStore.profile?.username else {
+            return "@pawparazzi_user"
+        }
+        return "@\(username)"
+    }
+    
+    private var displayInitials: String {
+        guard let username = userStore.profile?.username else { return "🐾" }
+        return String(username.prefix(2)).uppercased()
     }
 }
 

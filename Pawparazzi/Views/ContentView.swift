@@ -1,9 +1,23 @@
 import SwiftUI
 
 struct ContentView: View {
+    @EnvironmentObject private var sessionManager: SessionManager
+
+    var body: some View {
+        Group {
+            if sessionManager.isAuthenticated {
+                MainTabView()
+            } else {
+                OnboardingView()
+            }
+        }
+        .animation(.easeInOut, value: sessionManager.isAuthenticated)
+    }
+}
+
+private struct MainTabView: View {
     @State private var selectedTab: String = "feed"
 
-    
     var body: some View {
         VStack(spacing: 0) {
             // MARK: - Main content
@@ -20,7 +34,7 @@ struct ContentView: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             
             // MARK: - Bottom Nav Bar
-            ZStack (alignment: .top) {
+            ZStack(alignment: .top) {
                 Color(UIColor.systemBackground).shadow(radius: 2)
                 
                 GeometryReader { geo in
@@ -55,7 +69,8 @@ struct ContentView: View {
                     NavBarButton(icon: "UserIcon", title: "User", isSelected: selectedTab == "user") {
                         withAnimation { selectedTab = "user" }
                     }
-                }.padding(.top, 16)
+                }
+                .padding(.top, 16)
             }
             .frame(height: 80)
         }
@@ -64,7 +79,7 @@ struct ContentView: View {
     }
     
     // MARK: - Calculate pill offset
-    func tabOffset(selectedTab: String, tabWidth: CGFloat) -> CGFloat {
+    private func tabOffset(selectedTab: String, tabWidth: CGFloat) -> CGFloat {
         switch selectedTab {
         case "feed": return tabWidth * 0 + (tabWidth * 0.2)
         case "explore": return tabWidth * 1 + (tabWidth * 0.2)
@@ -107,4 +122,5 @@ struct NavBarButton: View {
 
 #Preview {
     ContentView()
+        .environmentObject(SessionManager(api: PawparazziAPI()))
 }

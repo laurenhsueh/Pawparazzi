@@ -56,6 +56,18 @@ final class PawparazziAPI {
         return response.available
     }
 
+    func fetchProfile(username: String? = nil) async throws -> UserProfileResponse {
+        var items: [URLQueryItem] = []
+        let token = try requireSessionToken()
+        items.append(.init(name: "session_token", value: token))
+
+        return try await client.send(
+            path: "/users/profile",
+            method: .get,
+            queryItems: items
+        )
+    }
+
     @discardableResult
     func register(username: String, email: String, passwordHash: String) async throws -> SessionTokenResponse {
         let body = RegisterRequest(username: username, passwdHash: passwordHash, email: email)
@@ -134,7 +146,8 @@ final class PawparazziAPI {
     func listFollowers(
         username: String,
         limit: Int? = nil,
-        cursor: String? = nil
+        cursor: String? = nil,
+        relationship: String? = nil
     ) async throws -> FollowersListResponse {
         var items: [URLQueryItem] = [
             .init(name: "username", value: username)
@@ -144,6 +157,9 @@ final class PawparazziAPI {
         }
         if let cursor = cursor {
             items.append(.init(name: "cursor", value: cursor))
+        }
+        if let relationship {
+            items.append(.init(name: "relationship", value: relationship))
         }
 
         return try await client.send(

@@ -7,8 +7,7 @@
 import SwiftUI
 
 struct LoginView: View {
-    @State private var email = ""
-    @State private var password = ""
+    @ObservedObject var viewModel: LoginViewModel
     @State private var isPasswordHidden = true
     
     var back: () -> Void      // NEW
@@ -36,24 +35,42 @@ struct LoginView: View {
                 .padding(.top, 24)
             
             // MARK: - Email Field
-            TextField("Email", text: $email)
+            TextField("Username", text: $viewModel.username)
                 .fieldStyle()
             
             // MARK: - Password Field
-            PasswordField(title: "Password", text: $password, isHidden: $isPasswordHidden)
+            PasswordField(title: "Password", text: $viewModel.password, isHidden: $isPasswordHidden)
+            
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .font(.custom("Inter-Regular", size: 12))
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
             
             Spacer()
             
             // MARK: - Login Button
-            Button(action: { print("Login tapped") }) {
-                Text("Login")
-                    .font(.custom("Inter-Regular", size: 14))
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(AppColors.primaryAction)
-                    .foregroundColor(.white)
-                    .cornerRadius(12)
+            Button(action: {
+                Task {
+                    await viewModel.login()
+                }
+            }) {
+                Group {
+                    if viewModel.isLoading {
+                        ProgressView()
+                    } else {
+                        Text("Login")
+                    }
+                }
+                .font(.custom("Inter-Regular", size: 14))
+                .frame(maxWidth: .infinity)
+                .padding()
+                .background(AppColors.primaryAction)
+                .foregroundColor(.white)
+                .cornerRadius(12)
             }
+            .disabled(viewModel.isLoading)
             .padding(.horizontal, 16)
             
             // MARK: - Divider and Sign Up

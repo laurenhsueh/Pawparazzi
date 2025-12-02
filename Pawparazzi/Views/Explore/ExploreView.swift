@@ -6,14 +6,16 @@ struct ExploreView: View {
     @State private var categorizedTags: [String: [String]] = TagData.categorizedTags
     @State private var quickTags: [String] = TagData.quickTags
     @State private var selectedFilterTag: String? = nil
-        @State private var showingFilteredFeed: Bool = false
+    @State private var showingFilteredFeed: Bool = false
 
     var body: some View {
         if showingFilteredFeed, let tag = selectedFilterTag {
-            FilteredTagFeedView(tag: tag, cats: store.cats) {
-                // Back button tapped
+            FilteredTagFeedView(tag: tag, store: store) {
                 showingFilteredFeed = false
                 selectedFilterTag = nil
+            }
+            .task {
+                await store.searchCatsImmediately(tags: [tag])
             }
         } else {
             ScrollView {
@@ -26,6 +28,42 @@ struct ExploreView: View {
                     
                     // MARK: - Search Bar
                     SearchBar(text: $searchText, placeholder: "The most stinky cat")
+                        .onChange(of: searchText, perform: handleSearchTextChange)
+                    
+                    if store.isSearching && !searchText.isEmpty {
+                        ProgressView("Searching…")
+                            .padding(.horizontal, 16)
+                    }
+                    
+                    if let error = store.searchError, !error.isEmpty {
+                        Text(error)
+                            .font(.custom("Inter-Regular", size: 12))
+                            .foregroundColor(.red)
+                            .padding(.horizontal, 16)
+                    }
+                    
+                    if !store.searchResults.isEmpty {
+                        VStack(alignment: .leading, spacing: 12) {
+                            Text("Search Results")
+                                .font(.custom("Inter-Regular", size: 16))
+                                .fontWeight(.semibold)
+                                .padding(.horizontal, 16)
+                            
+                            ScrollView(.horizontal, showsIndicators: false) {
+                                HStack(spacing: 12) {
+                                    ForEach(store.searchResults) { cat in
+                                        CatThumbnail(cat: cat)
+                                            .onAppear {
+                                                Task {
+                                                    await store.loadMoreSearchResultsIfNeeded(currentCat: cat)
+                                                }
+                                            }
+                                    }
+                                }
+                                .padding(.horizontal, 16)
+                            }
+                        }
+                    }
                     
                     // MARK: - Quick Tags
                     HStack(spacing: 12) {
@@ -33,8 +71,6 @@ struct ExploreView: View {
                         Text("Explore")
                             .font(.custom("Inter-Regular", size: 14))
                             .foregroundStyle(.primary)
-                                .font(.custom("Inter-Regular", size: 14))
-                                .foregroundStyle(.primary)
                         Spacer()
                         let allTags: [String] = store.cats.flatMap { cat in
                             cat.tags ?? []
@@ -44,7 +80,14 @@ struct ExploreView: View {
                         ForEach(uniqueTags, id: \.self) { tag in
                             Text(tag)
                                 .tagOutline(isSelected: selectedFilterTag == tag)
-                                .onTapGesture { toggleFilterTag(tag) }
+                                .onTapGesture {
+                                    let wasSelected = selectedFilterTag == tag
+                                    toggleFilterTag(tag)
+                                    guard !wasSelected else { return }
+                                    Task {
+                                        await store.searchCatsImmediately(tags: [tag])
+                                    }
+                                }
                         }
                         
                     }
@@ -55,19 +98,18 @@ struct ExploreView: View {
                     let tagList = catsByTag.keys.sorted()
                     
                     ForEach(tagList, id: \.self) { tag in
-                        // Skip tags not matching the filter
                         if let filter = selectedFilterTag, filter != tag {
                             EmptyView()
                         } else {
                             VStack(alignment: .leading, spacing: 12) {
                                 
-                                // Category title WITH > and tagOutline styling
                                 HStack {
                                     Text("\(tag) >")
                                         .tagOutline(isSelected: selectedFilterTag == tag)
                                         .onTapGesture {
                                             selectedFilterTag = tag
-                                            showingFilteredFeed = true }
+                                            showingFilteredFeed = true
+                                        }
                                     Spacer()
                                 }
                                 .padding(.leading, 16)
@@ -112,13 +154,27 @@ struct ExploreView: View {
     // MARK: - Toggle selected tag filter
     private func toggleFilterTag(_ tag: String) {
         if selectedFilterTag == tag {
-            selectedFilterTag = nil  // unselect
+            selectedFilterTag = nil
+            showingFilteredFeed = false
         } else {
-            selectedFilterTag = tag  // filter by tag
+            selectedFilterTag = tag
+            showingFilteredFeed = true
         }
     }
 
-    // MARK: - Group cats by tag
+    private func handleSearchTextChange(_ text: String) {
+        let tags = parseTags(from: text)
+        store.searchCats(tags: tags)
+    }
+
+    private func parseTags(from text: String) -> [String] {
+        text
+            .split(whereSeparator: { character in
+                character == "," || character == " " || character == "#"
+            })
+            .map { String($0) }
+    }
+
     private func groupCatsByTag(cats: [CatModel]) -> [String: [CatModel]] {
         var dict: [String: [CatModel]] = [:]
         for cat in cats {
@@ -131,6 +187,35 @@ struct ExploreView: View {
     }
 }
 
+private struct CatThumbnail: View {
+    let cat: CatModel
+
+    var body: some View {
+        VStack(spacing: 8) {
+            if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
+                AsyncImage(url: url) { image in
+                    image
+                        .resizable()
+                        .scaledToFill()
+                } placeholder: {
+                    Rectangle()
+                        .fill(Color(.secondarySystemFill))
+                }
+                .frame(width: 132, height: 200)
+                .clipped()
+                .cornerRadius(12)
+            }
+
+            Text(cat.name)
+                .font(.custom("Inter-Regular", size: 12))
+                .foregroundStyle(AppColors.mutedText)
+                .lineLimit(1)
+                .frame(width: 132)
+        }
+    }
+}
+
 #Preview {
     ExploreView()
 }
+

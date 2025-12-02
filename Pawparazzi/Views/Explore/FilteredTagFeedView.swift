@@ -8,13 +8,14 @@ import SwiftUI
 
 struct FilteredTagFeedView: View {
     let tag: String
-    let cats: [CatModel]
+    @ObservedObject var store: CatStore
     let onBack: () -> Void   // callback for back button
     
     @State private var searchText: String = ""
     
     var filteredCats: [CatModel] {
-        cats.filter { $0.tags?.contains(tag) ?? false }
+        let source = store.searchResults.isEmpty ? store.cats : store.searchResults
+        return source.filter { $0.tags?.contains(tag) ?? false }
     }
     
     // Generate random heights for each cat (80 or 160)
@@ -32,6 +33,7 @@ struct FilteredTagFeedView: View {
                         .font(.system(size: 18, weight: .medium))
                 }
                 SearchBar(text: $searchText, placeholder: "Search \(tag) cats")
+                    .onChange(of: searchText, perform: handleSearchChange)
             }
             
             HStack {
@@ -41,12 +43,22 @@ struct FilteredTagFeedView: View {
             }
             
             // MARK: - Pinterest-style feed
+            if store.isSearching {
+                ProgressView("Fetching cats…")
+                    .padding(.vertical, 32)
+            }
+
+            if let error = store.searchError, !error.isEmpty {
+                Text(error)
+                    .font(.custom("Inter-Regular", size: 12))
+                    .foregroundColor(.red)
+            }
+            
             ScrollView(.vertical, showsIndicators: true) {
                 HStack(alignment: .top, spacing: 4) {
                     let columnWidth: CGFloat = 110
                     let columns = 3
                     
-                    // Split images into 3 columns
                     let columnedCats: [[CatModel]] = {
                         var temp = Array(repeating: [CatModel](), count: columns)
                         for (index, cat) in filteredCats.enumerated() {
@@ -72,6 +84,11 @@ struct FilteredTagFeedView: View {
                                             .frame(width: columnWidth, height: randomHeight())
                                             .cornerRadius(12)
                                     }
+                                    .onAppear {
+                                        Task {
+                                            await store.loadMoreSearchResultsIfNeeded(currentCat: cat)
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -83,5 +100,15 @@ struct FilteredTagFeedView: View {
         .background(AppColors.background)
         .padding(.horizontal, 16)
         .padding(.vertical, 12)
+    }
+}
+
+private extension FilteredTagFeedView {
+    func handleSearchChange(_ text: String) {
+        let extraTags = text
+            .split(whereSeparator: { $0 == " " || $0 == "," || $0 == "#" })
+            .map { String($0) }
+        let tags = [tag] + extraTags
+        store.searchCats(tags: tags)
     }
 }

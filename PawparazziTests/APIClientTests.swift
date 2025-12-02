@@ -16,6 +16,10 @@ struct APIClientTests {
         let value: String
     }
 
+    private struct SampleRequest: Encodable {
+        let value: String
+    }
+
     private struct MockSession: URLSessioning {
         let handler: (URLRequest) throws -> (Data, URLResponse)
 
@@ -56,6 +60,62 @@ struct APIClientTests {
         )
 
         #expect(response.value == "ok")
+    }
+
+    @Test func encodesJSONBodyAndHeaders() async throws {
+        let baseURL = URL(string: "https://example.com")!
+        let environment = APIEnvironment(baseURL: baseURL)
+
+        let mockSession = MockSession { request in
+            #expect(request.httpMethod == HTTPMethod.post.rawValue)
+            #expect(request.value(forHTTPHeaderField: "Content-Type") == "application/json")
+
+            let body = request.httpBody.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: String] }
+            #expect(body?["value"] == "payload")
+
+            let httpResponse = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+            let data = """
+            {
+                "success": true,
+                "error": "",
+                "value": "sent"
+            }
+            """.data(using: .utf8)!
+            return (data, httpResponse)
+        }
+
+        let client = APIClient(environment: environment, session: mockSession)
+        let response: SampleResponse = try await client.send(
+            path: "/submit",
+            method: .post,
+            body: SampleRequest(value: "payload")
+        )
+
+        #expect(response.value == "sent")
+    }
+
+    @Test func fetchesPlainText() async throws {
+        let baseURL = URL(string: "https://example.com")!
+        let environment = APIEnvironment(baseURL: baseURL)
+
+        let mockSession = MockSession { request in
+            let httpResponse = HTTPURLResponse(
+                url: request.url!,
+                statusCode: 200,
+                httpVersion: nil,
+                headerFields: nil
+            )!
+            return ("pong".data(using: .utf8)!, httpResponse)
+        }
+
+        let client = APIClient(environment: environment, session: mockSession)
+        let text = try await client.getPlainText(path: "/health")
+        #expect(text == "pong")
     }
 
     @Test func throwsHTTPErrorForFailedEnvelope() async {

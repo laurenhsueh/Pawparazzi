@@ -9,6 +9,8 @@ import SwiftUI
 
 struct SetupProfileView: View {
     @ObservedObject var model: OnboardingModel
+    var isSubmitting: Bool
+    var errorMessage: String?
     var next: () -> Void
     var back: () -> Void
     @Environment(\.dismiss) var dismiss
@@ -64,10 +66,11 @@ struct SetupProfileView: View {
             
             // MARK: - Next Button
             Button(action: {
+                guard !isSubmitting else { return }
                 if step < 3 { step += 1 }
                 else { next() }
             }) {
-                Text(step < 3 ? "Next" : "Finish")
+                Text(isSubmitting ? "Submitting..." : (step < 3 ? "Next" : "Finish"))
                     .font(.custom("Inter-Regular", size: 16))
                     .foregroundColor(.white)
                     .frame(maxWidth: .infinity)
@@ -75,6 +78,15 @@ struct SetupProfileView: View {
                     .background(AppColors.accent)
                     .cornerRadius(12)
                     .padding(.horizontal, 16)
+            }
+            .disabled(isSubmitting)
+
+            if let error = errorMessage {
+                Text(error)
+                    .font(.custom("Inter-Regular", size: 12))
+                    .foregroundColor(.red)
+                    .padding(.horizontal, 16)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
             
         }
@@ -91,7 +103,11 @@ struct SetupProfileView: View {
     
     var nameStep: some View {
         VStack(spacing: 12) {
-            TextField("Full Name", text: $model.name)
+            // TextField("Full Name", text: $model.name)
+            //     .fieldStyle()
+            TextField("City", text: $model.location)
+                .fieldStyle()
+            TextField("Bio", text: $model.bio)
                 .fieldStyle()
         }
     }

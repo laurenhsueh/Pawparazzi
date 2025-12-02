@@ -8,41 +8,24 @@
 import SwiftUI
 
 struct FriendsView: View {
+    @StateObject private var store = FollowersStore()
     @State private var searchText: String = ""
     @State private var selectedSegment: FollowSegment = .following
     
-    // Demo data for now – can be wired to real backend later.
-    private let users: [FollowUser] = [
-        FollowUser(handle: "@meowmaster_99", isFollowing: true, isFollower: true),
-        FollowUser(handle: "@whiskerwatcher", isFollowing: true, isFollower: false),
-        FollowUser(handle: "@nyc_catspotter", isFollowing: true, isFollower: true),
-        FollowUser(handle: "@purrfect_photos", isFollowing: true, isFollower: false),
-        FollowUser(handle: "@feline.friend", isFollowing: true, isFollower: false),
-        FollowUser(handle: "@catlover4life", isFollowing: true, isFollower: false)
-    ]
-    
     private var followingCount: Int {
-        users.filter { $0.isFollowing }.count
+        store.following.count
     }
     
     private var followersCount: Int {
-        users.filter { $0.isFollower }.count
+        store.followers.count
     }
     
-    private var filteredUsers: [FollowUser] {
-        let base: [FollowUser]
-        switch selectedSegment {
-        case .following:
-            base = users.filter { $0.isFollowing }
-        case .followers:
-            base = users.filter { $0.isFollower }
-        }
-        
+    private var filteredUsers: [FollowerSummary] {
+        let base: [FollowerSummary] = selectedSegment == .following ? store.following : store.followers
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return base
         }
-        
-        return base.filter { $0.handle.localizedCaseInsensitiveContains(searchText) }
+        return base.filter { $0.username.localizedCaseInsensitiveContains(searchText) }
     }
     
     var body: some View {
@@ -70,7 +53,36 @@ struct FriendsView: View {
                 // MARK: - Follow List
                 VStack(spacing: 16) {
                     ForEach(filteredUsers) { user in
-                        FollowRow(user: user)
+                        let actionTitle = selectedSegment == .following ? "Unfollow" : "Follow"
+                        FollowRow(
+                            user: user,
+                            isFollowingSegment: selectedSegment == .following,
+                            actionTitle: actionTitle,
+                            action: {
+                                Task {
+                                    let action = selectedSegment == .following ? "unfollow" : nil
+                                    await store.toggleFollow(username: user.username, action: action)
+                                }
+                            }
+                        )
+                        .task {
+                            if selectedSegment == .following {
+                                await store.loadMoreFollowingIfNeeded(current: user)
+                            } else {
+                                await store.loadMoreFollowersIfNeeded(current: user)
+                            }
+                        }
+                    }
+                    
+                    if storeErrorMessage != nil {
+                        Text(storeErrorMessage ?? "")
+                            .font(.custom("Inter-Regular", size: 12))
+                            .foregroundColor(.red)
+                    }
+                    
+                    if isCurrentSegmentLoading {
+                        ProgressView()
+                            .padding(.vertical, 12)
                     }
                 }
                 .padding(.horizontal, 16)
@@ -80,21 +92,26 @@ struct FriendsView: View {
             }
         }
         .background(AppColors.background.ignoresSafeArea())
+        .refreshable {
+            await store.refresh()
+        }
+        .task {
+            await store.refresh()
+        }
+    }
+    
+    private var storeErrorMessage: String? {
+        store.errorMessage
+    }
+    
+    private var isCurrentSegmentLoading: Bool {
+        selectedSegment == .following ? store.isLoadingFollowing : store.isLoadingFollowers
     }
 }
-
-// MARK: - Models
 
 private enum FollowSegment {
     case following
     case followers
-}
-
-private struct FollowUser: Identifiable {
-    let id = UUID()
-    let handle: String
-    let isFollowing: Bool
-    let isFollower: Bool
 }
 
 // MARK: - Segmented Control
@@ -173,11 +190,13 @@ private struct FollowSegmentControl: View {
 // MARK: - Row
 
 private struct FollowRow: View {
-    let user: FollowUser
+    let user: FollowerSummary
+    let isFollowingSegment: Bool
+    let actionTitle: String
+    let action: () -> Void
     
     var body: some View {
         HStack(spacing: 12) {
-            // Avatar placeholder
             ZStack {
                 Circle()
                     .fill(
@@ -191,28 +210,51 @@ private struct FollowRow: View {
                         )
                     )
                 
-                Text(String(user.handle.dropFirst().prefix(1)).uppercased())
-                    .font(.custom("Inter-Regular", size: 20))
-                    .fontWeight(.semibold)
-                    .foregroundStyle(.white)
+                if let avatar = user.avatarUrl,
+                   let url = URL(string: avatar) {
+                    AsyncImage(url: url) { image in
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    } placeholder: {
+                        ProgressView()
+                    }
+                    .clipShape(Circle())
+                } else {
+                    Text(String(user.username.prefix(1)).uppercased())
+                        .font(.custom("Inter-Regular", size: 20))
+                        .fontWeight(.semibold)
+                        .foregroundStyle(.white)
+                }
             }
             .frame(width: 48, height: 48)
             
-            Text(user.handle)
-                .font(.custom("Inter-Regular", size: 16))
-                .foregroundStyle(.primary)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("@\(user.username)")
+                    .font(.custom("Inter-Regular", size: 16))
+                    .foregroundStyle(.primary)
+                if let bio = user.bio {
+                    Text(bio)
+                        .font(.custom("Inter-Regular", size: 12))
+                        .foregroundStyle(AppColors.mutedText)
+                        .lineLimit(1)
+                }
+            }
             
             Spacer()
             
-            Text(user.isFollowing ? "Following" : "Follow")
-                .font(.custom("Inter-Regular", size: 13))
-                .foregroundStyle(AppColors.mutedText)
-                .padding(.horizontal, 18)
-                .padding(.vertical, 6)
-                .background(
-                    Capsule()
-                        .stroke(AppColors.fieldBorder, lineWidth: 1)
-                )
+            Button(action: action) {
+                Text(actionTitle)
+                    .font(.custom("Inter-Regular", size: 13))
+                    .foregroundStyle(AppColors.mutedText)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule()
+                            .stroke(AppColors.fieldBorder, lineWidth: 1)
+                    )
+            }
+            .buttonStyle(.plain)
         }
         .padding(.vertical, 2)
     }

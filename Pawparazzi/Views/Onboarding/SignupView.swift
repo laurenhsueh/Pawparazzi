@@ -8,6 +8,7 @@ import SwiftUI
 
 struct SignupView: View {
     @ObservedObject var model: OnboardingModel
+    @ObservedObject var viewModel: SignupViewModel
     var next: () -> Void
     var back: () -> Void
     var goToLogin: () -> Void
@@ -46,7 +47,11 @@ struct SignupView: View {
             Spacer()
             
             // Continue button
-            Button(action: next) {
+            Button(action: {
+                if viewModel.validateCredentials(using: model) {
+                    next()
+                }
+            }) {
                 Text("Continue")
                     .frame(maxWidth: .infinity)
                     .padding()
@@ -54,7 +59,16 @@ struct SignupView: View {
                     .foregroundColor(.white)
                     .cornerRadius(12)
             }
+            .disabled(viewModel.isLoading)
             .padding(.horizontal, 16)
+
+            if let error = viewModel.errorMessage {
+                Text(error)
+                    .font(.custom("Inter-Regular", size: 12))
+                    .foregroundColor(.red)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+            }
             
             // Divider & Login
             HStack {

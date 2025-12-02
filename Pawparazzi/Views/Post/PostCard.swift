@@ -20,9 +20,21 @@ struct PostCard: View {
                 HStack(alignment: .center) {
                     // Username + profile circle
                     HStack(spacing: 12) {
-                        Circle()
-                            .fill(AppColors.secondarySystemBackground)
-                            .frame(width: 36, height: 36)
+                        Group {
+                            if let avatarUrl = cat.posterAvatarUrl, let url = URL(string: avatarUrl) {
+                                AsyncImage(url: url) { image in
+                                    image
+                                        .resizable()
+                                        .scaledToFill()
+                                } placeholder: {
+                                    Color(AppColors.secondarySystemBackground)
+                                }
+                            } else {
+                                Color(AppColors.secondarySystemBackground)
+                            }
+                        }
+                        .frame(width: 36, height: 36)
+                        .clipShape(Circle())
 
                         Text("@\(cat.username)")
                             .font(.custom("Slabo13px-Regular", size: 14))
@@ -108,19 +120,31 @@ struct PostCard: View {
 
                 // MARK: - Action bar
                 HStack(spacing: 22) {
-                    HStack(spacing: 6) {
-                        Image(systemName: "bubble.right")
-                        Text("5")
-                    }
+//                    HStack(spacing: 6) {
+//                        Image(systemName: "bubble.right")
+//                        Text("5")
+//                    }
 
-                    HStack(spacing: 6) {
-                        Image(systemName: "heart")
-                        Text("\(cat.likes)")
+                    Button {
+                        Task {
+                            if cat.isLiked == true {
+                                await CatStore.shared.removeLike(cat)
+                            } else {
+                                await CatStore.shared.likeCat(cat)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: (cat.isLiked ?? false) ? "heart.fill" : "heart")
+                                .foregroundStyle((cat.isLiked ?? false) ? .red : .primary)
+                            Text("\(cat.likes)")
+                        }
                     }
+                    .buttonStyle(.plain)
 
-                    HStack(spacing: 6) {
-                        Image(systemName: "square.and.arrow.up")
-                    }
+//                    HStack(spacing: 6) {
+//                        Image(systemName: "square.and.arrow.up")
+//                    }
 
                     Spacer()
 

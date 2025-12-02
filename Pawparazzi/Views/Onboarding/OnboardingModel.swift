@@ -14,6 +14,7 @@ class OnboardingModel: ObservableObject {
     @Published var confirmPassword: String = ""
     @Published var username: String = ""
     @Published var name: String = ""
+    @Published var location: String = ""
     @Published var bio: String = ""
     @Published var profileImage: UIImage?
     @Published var collections: [String] = []

@@ -2,10 +2,13 @@ import SwiftUI
 
 struct OnboardingView: View {
     @StateObject private var model = OnboardingModel()
+    @StateObject private var signupViewModel = SignupViewModel()
+    @StateObject private var loginViewModel = LoginViewModel()
     @State private var currentStep = 0
 
     var body: some View {
-        VStack(spacing: 24) {
+        ZStack {
+            VStack(spacing: 24) {
             switch currentStep {
             case 0:
                 WelcomeStep(
@@ -16,6 +19,7 @@ struct OnboardingView: View {
             case 1:
                 SignupView(
                     model: model,
+                    viewModel: signupViewModel,
                     next: { nextStep() },
                     back: { previousStep() },
                     goToLogin: { currentStep = 3 }
@@ -24,24 +28,35 @@ struct OnboardingView: View {
             case 2:
                 SetupProfileView(
                     model: model,
+                    isSubmitting: signupViewModel.isLoading,
+                    errorMessage: signupViewModel.errorMessage,
                     next: { nextStep() },
                     back: { previousStep() }
                 )
 
             case 3:
                 LoginView(
+                    viewModel: loginViewModel,
                     back: { currentStep = 0 },
                     goToSignUp: { currentStep = 1 }
                 )
-                
-            case 4:
-                FeedView()
 
             default:
                 WelcomeStep(
                     next: { nextStep() },
                     goToLogin: { currentStep = 3 }
                 )
+            }
+        }
+            .disabled(signupViewModel.isLoading)
+
+            if signupViewModel.isLoading {
+                Color.black.opacity(0.15)
+                    .ignoresSafeArea()
+                ProgressView("Creating your account...")
+                    .padding()
+                    .background(.ultraThinMaterial)
+                    .cornerRadius(12)
             }
         }
         .padding(16)
@@ -59,12 +74,7 @@ struct OnboardingView: View {
     private func previousStep() { currentStep = max(currentStep - 1, 0) }
     private func finishOnboarding() {
         Task {
-            do {
-                //try await model.saveToSupabase()
-                currentStep = 4                    // ⬅️ Switch to main app root
-            } catch {
-                print("Error saving onboarding data: \(error)")
-            }
+            await signupViewModel.completeOnboarding(using: model)
         }
     }
 }

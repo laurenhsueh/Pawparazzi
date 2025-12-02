@@ -26,12 +26,30 @@ struct FeedView: View {
                 LazyVStack(spacing: 24) {
                     ForEach(store.cats) { cat in
                         PostCard(cat: cat)
+                            .task {
+                                await store.loadMoreIfNeeded(currentCat: cat)
+                            }
+                    }
+                    
+                    if store.isLoading && !store.cats.isEmpty {
+                        ProgressView()
+                            .padding(.vertical, 16)
                     }
                 }
                 .padding(.vertical, 12)
             }
             .task {
                 await store.refresh()
+            }
+            .refreshable {
+                await store.refresh()
+            }
+            
+            if let error = store.errorMessage {
+                Text(error)
+                    .font(.custom("Inter-Regular", size: 12))
+                    .foregroundColor(.red)
+                    .padding(.vertical, 8)
             }
         }
         .background(AppColors.background)
