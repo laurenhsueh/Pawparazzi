@@ -45,11 +45,8 @@ struct PhotoPickerView: View {
         }
         .onChange(of: selectedItem) { newItem in
             Task {
-                if let data = try? await newItem?.loadTransferable(type: Data.self),
-                   let uiImage = UIImage(data: data) {
-                    let squareImage = cropToSquare(image: uiImage)
-                    let resizedData = squareImage.resize(maxWidth: 1024).jpegData(compressionQuality: 0.6)
-                    photoData = resizedData
+                if let data = try? await newItem?.loadTransferable(type: Data.self) {
+                    photoData = data
                 }
             }
         }
