@@ -29,9 +29,39 @@ final class APIClient {
         self.session = session
         self.encoder = encoder
         self.decoder = decoder
+
+        // Match backend's snake_case keys
         self.decoder.keyDecodingStrategy = .convertFromSnakeCase
-        self.decoder.dateDecodingStrategy = .iso8601
         self.encoder.keyEncodingStrategy = .convertToSnakeCase
+
+        // Fix for iOS 18.5 and below
+        // The backend sends timestamps like "2025-12-05T04:21:06.983135+00:00"
+        // which include fractional seconds. JSONDecoder.DateDecodingStrategy.iso8601
+        // uses ISO8601DateFormatter without .withFractionalSeconds and will fail
+        // to parse these, causing a decoding error.
+        let iso8601WithFractionalSeconds = ISO8601DateFormatter()
+        iso8601WithFractionalSeconds.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+
+        self.decoder.dateDecodingStrategy = .custom { decoder in
+            let container = try decoder.singleValueContainer()
+            let dateString = try container.decode(String.self)
+
+            if let date = iso8601WithFractionalSeconds.date(from: dateString) {
+                return date
+            }
+
+            // Fallback to the standard ISO8601 parser for any other valid formats.
+            let fallbackFormatter = ISO8601DateFormatter()
+            if let date = fallbackFormatter.date(from: dateString) {
+                return date
+            }
+
+            throw DecodingError.dataCorruptedError(
+                in: container,
+                debugDescription: "Invalid ISO8601 date: \(dateString)"
+            )
+        }
+
         self.encoder.dateEncodingStrategy = .iso8601
     }
 
@@ -56,6 +86,11 @@ final class APIClient {
         }
 
         var request = URLRequest(url: url, timeoutInterval: timeout)
+        
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 26 {
+            request.assumesHTTP3Capable = false
+        }
+
         request.httpMethod = method.rawValue
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
@@ -110,6 +145,11 @@ final class APIClient {
         }
 
         var request = URLRequest(url: url, timeoutInterval: timeout)
+        
+        if ProcessInfo.processInfo.operatingSystemVersion.majorVersion < 26 {
+            request.assumesHTTP3Capable = false
+        }
+
         request.httpMethod = HTTPMethod.get.rawValue
 
         let (data, _) = try await session.data(for: request)
