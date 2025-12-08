@@ -13,19 +13,24 @@ struct OnboardingView: View {
             case 0:
                 WelcomeStep(
                     next: { nextStep() },
-                    goToLogin: { currentStep = 3 }
+                )
+            
+            case 1:
+                OnboardingInfoView(
+                    next: { nextStep() },
+                    back: { previousStep() },
                 )
                 
-            case 1:
+            case 2:
                 SignupView(
                     model: model,
                     viewModel: signupViewModel,
                     next: { nextStep() },
                     back: { previousStep() },
-                    goToLogin: { currentStep = 3 }
+                    goToLogin: { currentStep = 4 }
                 )
 
-            case 2:
+            case 3:
                 SetupProfileView(
                     model: model,
                     isSubmitting: signupViewModel.isLoading,
@@ -34,17 +39,16 @@ struct OnboardingView: View {
                     back: { previousStep() }
                 )
 
-            case 3:
+            case 4:
                 LoginView(
                     viewModel: loginViewModel,
-                    back: { currentStep = 0 },
-                    goToSignUp: { currentStep = 1 }
+                    back: { currentStep = 1 },
+                    goToSignUp: { currentStep = 2 }
                 )
 
             default:
                 WelcomeStep(
                     next: { nextStep() },
-                    goToLogin: { currentStep = 3 }
                 )
             }
         }
@@ -59,7 +63,6 @@ struct OnboardingView: View {
                     .cornerRadius(12)
             }
         }
-        .padding(16)
         .animation(.easeInOut, value: currentStep)
     }
 
