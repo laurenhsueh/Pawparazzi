@@ -82,8 +82,8 @@ final class PawparazziAPI {
     }
 
     @discardableResult
-    func login(username: String, passwordHash: String) async throws -> LoginResponse {
-        let body = LoginRequest(username: username, passwdHash: passwordHash)
+    func login(email: String, passwordHash: String) async throws -> LoginResponse {
+        let body = LoginRequest(email: email, passwdHash: passwordHash)
         let response: LoginResponse = try await client.send(
             path: "/users/login",
             method: .post,

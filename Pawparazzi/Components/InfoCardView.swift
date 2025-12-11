@@ -31,12 +31,12 @@ struct InfoCardView: View {
             VStack(alignment: .leading, spacing: 6) {
                 Text(title)
                     .font(.custom("Inter-SemiBold", size: 16))
-                    .foregroundColor(.black)
+                    .foregroundStyle(.primary)
                     .fixedSize(horizontal: false, vertical: true)
 
                 Text(text)
                     .font(.custom("Inter-Regular", size: 16))
-                    .foregroundColor(.black.opacity(0.7))
+                    .foregroundStyle(AppColors.mutedText)
                     .fixedSize(horizontal: false, vertical: true)
             }
 
@@ -45,8 +45,8 @@ struct InfoCardView: View {
         .padding(20)
         .background(
             RoundedRectangle(cornerRadius: 20)
-                .fill(.white)
-                .shadow(color: .black.opacity(0.08), radius: 10, x: 0, y: 4)
+                .fill(AppColors.cardBackground)
+                .shadow(color: AppColors.cardShadow.opacity(0.2), radius: 10, x: 0, y: 4)
         )
         .frame(maxWidth: 330) // makes cards narrower and cleaner
         .frame(maxWidth: .infinity) // centers the card

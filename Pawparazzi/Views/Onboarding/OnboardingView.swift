@@ -1,15 +1,17 @@
 import SwiftUI
 
 struct OnboardingView: View {
+    @EnvironmentObject private var sessionManager: SessionManager
     @StateObject private var model = OnboardingModel()
     @StateObject private var signupViewModel = SignupViewModel()
     @StateObject private var loginViewModel = LoginViewModel()
-    @State private var currentStep = 0
 
     var body: some View {
         ZStack {
+            AppColors.background
+                .ignoresSafeArea()
             VStack(spacing: 24) {
-            switch currentStep {
+            switch model.currentStep {
             case 0:
                 WelcomeStep(
                     next: { nextStep() },
@@ -27,7 +29,7 @@ struct OnboardingView: View {
                     viewModel: signupViewModel,
                     next: { nextStep() },
                     back: { previousStep() },
-                    goToLogin: { currentStep = 4 }
+                    goToLogin: { model.currentStep = 4 }
                 )
 
             case 3:
@@ -42,8 +44,8 @@ struct OnboardingView: View {
             case 4:
                 LoginView(
                     viewModel: loginViewModel,
-                    back: { currentStep = 1 },
-                    goToSignUp: { currentStep = 2 }
+                    back: { model.currentStep = 1 },
+                    goToSignUp: { model.currentStep = 2 }
                 )
 
             default:
@@ -63,21 +65,25 @@ struct OnboardingView: View {
                     .cornerRadius(12)
             }
         }
-        .animation(.easeInOut, value: currentStep)
+        .animation(.easeInOut, value: model.currentStep)
     }
 
 
     private func nextStep() {
-        if currentStep == 2 {
+        if model.currentStep >= 3 {
             finishOnboarding()
         } else {
-            currentStep += 1
+            model.currentStep += 1
         }
     }
-    private func previousStep() { currentStep = max(currentStep - 1, 0) }
+    private func previousStep() { model.currentStep = max(model.currentStep - 1, 0) }
     private func finishOnboarding() {
         Task {
             await signupViewModel.completeOnboarding(using: model)
+            if signupViewModel.errorMessage == nil {
+                sessionManager.refreshSession() // ensure auth state updates immediately
+                model.reset()
+            }
         }
     }
 }

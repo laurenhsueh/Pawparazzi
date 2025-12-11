@@ -17,89 +17,94 @@ struct SetupProfileView: View {
     
     @State private var step: Int = 1
     @State private var showingImagePicker = false
+    private let totalSteps = 2
     
     var body: some View {
-        VStack(spacing: 24) {
-            
-            // MARK: - Back Button
-            HStack {
+        ScrollView {
+            VStack(spacing: 24) {
+                
+                // MARK: - Back Button
+                HStack {
+                    Button(action: {
+                        if step == 1 { back() }
+                        else { step -= 1 }
+                    }) {
+                        Image(systemName: "chevron.left")
+                            .foregroundStyle(AppColors.primaryAction)
+                            .font(.system(size: 20, weight: .medium))
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 16)
+                .padding(.top, 12)
+                
+                // MARK: - Title
+                Text("Profile setup")
+                    .font(.custom("AnticDidone-Regular", size: 40))
+                    .foregroundStyle(.primary)
+                    .padding(.top)
+                
+                // MARK: - Step Content
+                Group {
+                    if step == 1 {
+                        nameStep
+                    } else {
+                        photoStep
+                    }
+                }
+                .animation(.easeInOut, value: step)
+                
+                Spacer(minLength: 0)
+                
+                // MARK: - Next Button
                 Button(action: {
-                    if step == 1 { back() }
-                    else { step -= 1 }
+                    guard !isSubmitting else { return }
+                    if step < totalSteps { step += 1 }
+                    else { next() }
                 }) {
-                    Image(systemName: "chevron.left")
-                        .foregroundStyle(.primary)
-                        .font(.system(size: 20, weight: .medium))
+                    Text(isSubmitting ? "Submitting..." : (step < totalSteps ? "Next" : "Finish"))
+                        .font(.custom("Inter-Regular", size: 16))
+                        .foregroundColor(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding()
+                        .background(AppColors.accent)
+                        .cornerRadius(12)
+                        .padding(.horizontal, 16)
                 }
-                Spacer()
-            }
-            .padding(.horizontal, 16)
-            .padding(.top, 12)
-            
-            // MARK: - Title
-            Text("Set Up Profile")
-                .font(.custom("AnticDidone-Regular", size: 40))
-                .padding(.top)
-            
-            // MARK: - Progress Dots
-            HStack(spacing: 8) {
-                ForEach(1...3, id: \.self) { index in
-                    Circle()
-                        .fill(step == index ? AppColors.mutedText : AppColors.mutedText.opacity(0.3))
-                        .frame(width: 10, height: 10)
+                .disabled(isSubmitting)
+                
+                if let error = errorMessage {
+                    Text(error)
+                        .font(.custom("Inter-Regular", size: 12))
+                        .foregroundColor(.red)
+                        .padding(.horizontal, 16)
+                        .frame(maxWidth: .infinity, alignment: .leading)
                 }
-            }
-            
-            Spacer().frame(height: 20)
-            
-            // MARK: - Step Content
-            Group {
-                if step == 1 {
-                    usernameStep
-                } else if step == 2 {
-                    nameStep
-                } else {
-                    photoStep
+                
+                // MARK: - Progress Dots
+                HStack(spacing: 8) {
+                    ForEach(1...totalSteps, id: \.self) { index in
+                        Circle()
+                            .fill(step == index ? AppColors.mutedText : AppColors.mutedText.opacity(0.3))
+                            .frame(width: 10, height: 10)
+                    }
                 }
+                
             }
-            .animation(.easeInOut, value: step)
-            
-            // MARK: - Next Button
-            Button(action: {
-                guard !isSubmitting else { return }
-                if step < 3 { step += 1 }
-                else { next() }
-            }) {
-                Text(isSubmitting ? "Submitting..." : (step < 3 ? "Next" : "Finish"))
-                    .font(.custom("Inter-Regular", size: 16))
-                    .foregroundColor(.white)
-                    .frame(maxWidth: .infinity)
-                    .padding()
-                    .background(AppColors.accent)
-                    .cornerRadius(12)
-                    .padding(.horizontal, 16)
-            }
-            .disabled(isSubmitting)
-
-            if let error = errorMessage {
-                Text(error)
-                    .font(.custom("Inter-Regular", size: 12))
-                    .foregroundColor(.red)
-                    .padding(.horizontal, 16)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-            }
-            
+            .padding(.bottom, 16)
         }
+        .scrollIndicators(.hidden)
+        .scrollDismissesKeyboard(.interactively)
+        .safeAreaInset(edge: .bottom) {
+            Color.clear.frame(height: 16)
+        }
+        .background(
+            AppColors.background
+                .ignoresSafeArea(.container, edges: .all)
+        )
     }
     
     // MARK: - Step Views
-    
-    var usernameStep: some View {
-        VStack(spacing: 12) {
-            TextField("Username", text: $model.username)
-                .fieldStyle()
-        }
-    }
     
     var nameStep: some View {
         VStack(spacing: 12) {
@@ -109,7 +114,7 @@ struct SetupProfileView: View {
                 .fieldStyle()
             TextField("Bio", text: $model.bio)
                 .fieldStyle()
-        }
+        }.padding(.horizontal, 8)
     }
     
     var photoStep: some View {
@@ -130,16 +135,29 @@ struct SetupProfileView: View {
                             .font(.custom("Inter-Regular", size: 14))
                             .foregroundStyle(AppColors.mutedText)
                     )
+                    .onTapGesture {
+                        showingImagePicker = true
+                    }
             }
             
-            Button("Choose Photo") {
-                showingImagePicker = true
-            }
-            .font(.custom("Inter-Regular", size: 16))
-            .foregroundColor(AppColors.accent)
+            // Button("Choose Photo") {
+            //     showingImagePicker = true
+            // }
+            // .font(.custom("Inter-Regular", size: 16))
+            // .foregroundColor(AppColors.accent)
         }
         .sheet(isPresented: $showingImagePicker) {
             ImagePicker(image: $model.profileImage)
         }
     }
+}
+
+#Preview {
+    SetupProfileView(
+        model: OnboardingModel(),
+        isSubmitting: false,
+        errorMessage: nil,
+        next: { },
+        back: { }
+    )
 }

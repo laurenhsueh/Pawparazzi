@@ -10,7 +10,7 @@ import SwiftUI
 
 @MainActor
 final class LoginViewModel: ObservableObject {
-    @Published var username: String = ""
+    @Published var email: String = ""
     @Published var password: String = ""
     @Published var isLoading: Bool = false
     @Published var errorMessage: String?
@@ -30,9 +30,14 @@ final class LoginViewModel: ObservableObject {
         guard !isLoading else { return }
         errorMessage = nil
 
-        let trimmedUsername = username.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !trimmedUsername.isEmpty else {
-            errorMessage = "Enter your username."
+        let trimmedEmail = email.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedEmail.isEmpty else {
+            errorMessage = "Enter your email."
+            return
+        }
+
+        guard trimmedEmail.contains("@") else {
+            errorMessage = "Enter a valid email."
             return
         }
 
@@ -46,12 +51,10 @@ final class LoginViewModel: ObservableObject {
 
         do {
             let hash = password.sha256()
-            _ = try await api.login(username: trimmedUsername, passwordHash: hash)
+            _ = try await api.login(email: trimmedEmail, passwordHash: hash)
             sessionManager.refreshSession()
         } catch {
             errorMessage = error.localizedDescription
         }
     }
 }
-
-

@@ -26,6 +26,11 @@ final class SignupViewModel: ObservableObject {
     }
 
     func validateCredentials(using model: OnboardingModel) -> Bool {
+        if model.username.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
+            errorMessage = SignupError.missingUsername.localizedDescription
+            return false
+        }
+
         if model.email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             errorMessage = "Email is required."
             return false
@@ -116,7 +121,7 @@ enum SignupError: LocalizedError {
         case .missingUsername:
             return "Pick a username to continue."
         case .usernameTaken:
-            return "That username is already taken."
+            return "That username or email is already taken."
         }
     }
 }

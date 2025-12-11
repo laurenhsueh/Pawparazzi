@@ -30,7 +30,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		50862D862EDE5B9000A2C1BE /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */ = {
+		6CF9CFCD2EEAB67700B6305F /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -43,7 +43,7 @@
 		5026DD862EC65839001F8CA9 /* Pawparazzi */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				50862D862EDE5B9000A2C1BE /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */,
+				6CF9CFCD2EEAB67700B6305F /* Exceptions for "Pawparazzi" folder in "Pawparazzi" target */,
 			);
 			path = Pawparazzi;
 			sourceTree = "<group>";
@@ -419,7 +419,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = Z3JM6Z9BMM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -452,7 +452,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 4;
 				DEVELOPMENT_TEAM = Z3JM6Z9BMM;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;

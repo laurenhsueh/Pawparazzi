@@ -14,7 +14,7 @@ struct RegisterRequest: Encodable {
 }
 
 struct LoginRequest: Encodable {
-    let username: String
+    let email: String
     let passwdHash: String
 }
 
