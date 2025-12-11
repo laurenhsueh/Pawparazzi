@@ -21,7 +21,7 @@ struct PostCard: View {
                     // Username + profile circle
                     HStack(spacing: 12) {
                         Group {
-                            if let avatarUrl = cat.posterAvatarUrl, let url = URL(string: avatarUrl) {
+                            if let avatarUrl = cat.poster.avatarUrl, let url = URL(string: avatarUrl) {
                                 AsyncImage(url: url) { image in
                                     image
                                         .resizable()
@@ -36,7 +36,7 @@ struct PostCard: View {
                         .frame(width: 36, height: 36)
                         .clipShape(Circle())
 
-                        Text("@\(cat.username)")
+                        Text("@\(cat.poster.username)")
                             .font(.custom("Slabo13px-Regular", size: 14))
                             .foregroundStyle(AppColors.accent)
                     }
@@ -96,10 +96,10 @@ struct PostCard: View {
                         }
 
                         // Tags overlay
-                        if let tags = cat.tags, !tags.isEmpty {
+                        if !cat.tags.isEmpty {
                             ScrollView(.horizontal, showsIndicators: false) {
                                 HStack(spacing: 8) {
-                                    ForEach(tags, id: \.self) { value in
+                                    ForEach(cat.tags, id: \.self) { value in
                                         Text(value)
                                             .tag()
                                     }

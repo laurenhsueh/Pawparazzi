@@ -34,29 +34,43 @@
             endingLineNumber = "190"
             landmarkName = "listCats(limit:cursor:username:)"
             landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            uuid = "21EE79FB-45A6-4618-B1EB-40D086F6A33D"
-            shouldBeEnabled = "Yes"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "Pawparazzi/Managers/CatStore.swift"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "194"
-            endingLineNumber = "194"
-            landmarkName = "loadCats(reset:)"
-            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "0E138277-05AA-4B22-BBA0-BFB913BED498 - dc66c024f9ea63ae"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.PawparazziAPI.listFollowing(username: Swift.Optional&lt;Swift.String&gt;, limit: Swift.Optional&lt;Swift.Int&gt;, cursor: Swift.Optional&lt;Swift.String&gt;) async throws -&gt; Pawparazzi.FollowingListResponse"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Managers/PawparazziAPI.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "190"
+                  endingLineNumber = "190">
+               </Location>
+               <Location
+                  uuid = "0E138277-05AA-4B22-BBA0-BFB913BED498 - dc66c024f9ea63ae"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.PawparazziAPI.listFollowing(username: Swift.Optional&lt;Swift.String&gt;, limit: Swift.Optional&lt;Swift.Int&gt;, cursor: Swift.Optional&lt;Swift.String&gt;) async throws -&gt; Pawparazzi.FollowingListResponse"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Managers/PawparazziAPI.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "190"
+                  endingLineNumber = "190">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "E32DF175-B668-4E31-B1B0-9CAEA256D9DA"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pawparazzi/Managers/CatStore.swift"
@@ -72,7 +86,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "96624C1F-1E7F-4F67-9141-08298C6777E7"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pawparazzi/Managers/CatStore.swift"
@@ -88,7 +102,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "F611C22F-9CB4-417E-9828-1122467EC1B9"
-            shouldBeEnabled = "No"
+            shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pawparazzi/Managers/CatStore.swift"
@@ -98,6 +112,36 @@
             endingLineNumber = "201"
             landmarkName = "loadCats(reset:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "F611C22F-9CB4-417E-9828-1122467EC1B9 - 19ec44898195c158"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Pawparazzi.CatStore.loadCats(reset: Swift.Bool) async -&gt; ()"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Managers/CatStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "202"
+                  endingLineNumber = "202">
+               </Location>
+               <Location
+                  uuid = "F611C22F-9CB4-417E-9828-1122467EC1B9 - 19ec44898195c17f"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Pawparazzi.CatStore.loadCats(reset: Swift.Bool) async -&gt; ()"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Managers/CatStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "201"
+                  endingLineNumber = "201">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -192,8 +236,8 @@
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "66"
             endingLineNumber = "66"
-            landmarkName = "APIClient"
-            landmarkType = "3">
+            landmarkName = "init(environment:session:encoder:decoder:)"
+            landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -242,6 +286,36 @@
             endingLineNumber = "79"
             landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "131AD49E-2A69-470B-A432-FBB568B3549A - d7693fda53a090cb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80">
+               </Location>
+               <Location
+                  uuid = "131AD49E-2A69-470B-A432-FBB568B3549A - d7693fda53a090cb"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "80"
+                  endingLineNumber = "80">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -280,7 +354,7 @@
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
             uuid = "CE62B29F-F734-4D47-9528-85866A67C128"
-            shouldBeEnabled = "Yes"
+            shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Pawparazzi/Managers/CatStore.swift"
@@ -402,6 +476,216 @@
             endingLineNumber = "95"
             landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
             landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "AAD77DA7-BD8D-4E77-9B43-3DB5ADD9738E"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pawparazzi/Networking/APIClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "101"
+            endingLineNumber = "101"
+            landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "AAD77DA7-BD8D-4E77-9B43-3DB5ADD9738E - d7693fda53a09580"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101">
+               </Location>
+               <Location
+                  uuid = "AAD77DA7-BD8D-4E77-9B43-3DB5ADD9738E - d7693fda53a09580"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "101"
+                  endingLineNumber = "101">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "EFD71581-89E4-4095-B21C-3061B902A983"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pawparazzi/Networking/APIClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "114"
+            endingLineNumber = "114"
+            landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "B158140B-738B-4E47-BC21-D01A402C7EEF"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pawparazzi/Networking/APIClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "110"
+            endingLineNumber = "110"
+            landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "B158140B-738B-4E47-BC21-D01A402C7EEF - d7693fda53a0942b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "B158140B-738B-4E47-BC21-D01A402C7EEF - 9df102381eda9621"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "B158140B-738B-4E47-BC21-D01A402C7EEF - 8f646e1c1987b025"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "B158140B-738B-4E47-BC21-D01A402C7EEF - eb79c9333a9ade24"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "86773DDC-80D1-40FA-ABD7-F8ED851B42CE"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Pawparazzi/Networking/APIClient.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "112"
+            endingLineNumber = "112"
+            landmarkName = "send(path:method:queryItems:body:headers:timeout:)"
+            landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "86773DDC-80D1-40FA-ABD7-F8ED851B42CE - d7693fda53a0942b"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(1) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "86773DDC-80D1-40FA-ABD7-F8ED851B42CE - 9df102381eda9621"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(2) await resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "86773DDC-80D1-40FA-ABD7-F8ED851B42CE - 8f646e1c1987b025"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(3) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+               <Location
+                  uuid = "86773DDC-80D1-40FA-ABD7-F8ED851B42CE - eb79c9333a9ade24"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "(4) suspend resume partial function for Pawparazzi.APIClient.send&lt;&#x3c4;_0_0 where &#x3c4;_0_0: Pawparazzi.APIResponseEnvelope, &#x3c4;_0_0: Swift.Decodable&gt;(path: Swift.String, method: Pawparazzi.HTTPMethod, queryItems: Swift.Optional&lt;Swift.Array&lt;Foundation.URLQueryItem&gt;&gt;, body: Swift.Optional&lt;Swift.Encodable&gt;, headers: Swift.Dictionary&lt;Swift.String, Swift.String&gt;, timeout: Swift.Double) async throws -&gt; &#x3c4;_0_0"
+                  moduleName = "Pawparazzi.debug.dylib"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/korgo/Desktop/Projects/Pawparazzi/Pawparazzi/Networking/APIClient.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "112"
+                  endingLineNumber = "112">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
    </Breakpoints>

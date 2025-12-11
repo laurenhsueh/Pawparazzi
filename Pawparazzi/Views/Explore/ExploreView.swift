@@ -73,7 +73,7 @@ struct ExploreView: View {
                             .foregroundStyle(.primary)
                         Spacer()
                         let allTags: [String] = store.cats.flatMap { cat in
-                            cat.tags ?? []
+                            cat.tags
                         }
                         let uniqueTags = Array(Set(allTags)).shuffled().prefix(3)  // 3 random tags
                         
@@ -178,8 +178,7 @@ struct ExploreView: View {
     private func groupCatsByTag(cats: [CatModel]) -> [String: [CatModel]] {
         var dict: [String: [CatModel]] = [:]
         for cat in cats {
-            guard let tags = cat.tags else { continue }
-            for tag in tags {
+            for tag in cat.tags {
                 dict[tag, default: []].append(cat)
             }
         }

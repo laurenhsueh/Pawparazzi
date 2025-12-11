@@ -295,11 +295,15 @@ final class CatStore: ObservableObject {
     private func updateLikes(for id: UUID, likes: Int, liked: Bool?) {
         if let index = cats.firstIndex(where: { $0.id == id }) {
             cats[index].likes = likes
-            cats[index].isLiked = liked
+            if let liked {
+                cats[index].isLiked = liked
+            }
         }
         if let index = searchResults.firstIndex(where: { $0.id == id }) {
             searchResults[index].likes = likes
-            searchResults[index].isLiked = liked
+            if let liked {
+                searchResults[index].isLiked = liked
+            }
         }
     }
 

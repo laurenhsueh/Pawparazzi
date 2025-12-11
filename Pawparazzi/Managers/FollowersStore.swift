@@ -14,8 +14,8 @@ final class FollowersStore: ObservableObject {
         case following
     }
 
-    @Published private(set) var followers: [FollowerSummary] = []
-    @Published private(set) var following: [FollowerSummary] = []
+    @Published private(set) var followers: [FollowerEdge] = []
+    @Published private(set) var following: [FollowerEdge] = []
     @Published var isLoadingFollowers: Bool = false
     @Published var isLoadingFollowing: Bool = false
     @Published var errorMessage: String?
@@ -41,18 +41,18 @@ final class FollowersStore: ObservableObject {
         await loadList(.following, reset: true, username: username)
     }
 
-    func loadMoreFollowersIfNeeded(current user: FollowerSummary?) async {
+    func loadMoreFollowersIfNeeded(current user: FollowerEdge?) async {
         guard let user else { return }
         let thresholdIndex = followers.index(followers.endIndex, offsetBy: -5, limitedBy: followers.startIndex) ?? followers.startIndex
-        if followers.firstIndex(where: { $0.username == user.username }) == thresholdIndex {
+        if followers.firstIndex(where: { $0.user.username == user.user.username }) == thresholdIndex {
             await loadList(.followers, reset: false, username: cachedUsername)
         }
     }
 
-    func loadMoreFollowingIfNeeded(current user: FollowerSummary?) async {
+    func loadMoreFollowingIfNeeded(current user: FollowerEdge?) async {
         guard let user else { return }
         let thresholdIndex = following.index(following.endIndex, offsetBy: -5, limitedBy: following.startIndex) ?? following.startIndex
-        if following.firstIndex(where: { $0.username == user.username }) == thresholdIndex {
+        if following.firstIndex(where: { $0.user.username == user.user.username }) == thresholdIndex {
             await loadList(.following, reset: false, username: cachedUsername)
         }
     }
@@ -85,20 +85,32 @@ final class FollowersStore: ObservableObject {
             cachedUsername = resolvedUsername
             let cursor = reset ? nil : cursor(for: relationship)
 
-            let response = try await api.listFollowers(
-                username: resolvedUsername,
-                limit: 20,
-                cursor: cursor,
-                relationship: relationship.rawValue
-            )
-
-            if reset {
-                assign(response.followers, to: relationship)
-            } else {
-                append(response.followers, to: relationship)
+            switch relationship {
+            case .followers:
+                let response = try await api.listFollowers(
+                    username: resolvedUsername,
+                    limit: 20,
+                    cursor: cursor
+                )
+                if reset {
+                    assign(response.followers, to: relationship)
+                } else {
+                    append(response.followers, to: relationship)
+                }
+                updateCursor(response.nextCursor, for: relationship)
+            case .following:
+                let response = try await api.listFollowing(
+                    username: resolvedUsername,
+                    limit: 20,
+                    cursor: cursor
+                )
+                if reset {
+                    assign(response.following, to: relationship)
+                } else {
+                    append(response.following, to: relationship)
+                }
+                updateCursor(response.nextCursor, for: relationship)
             }
-
-            updateCursor(response.nextCursor, for: relationship)
             errorMessage = nil
         } catch {
             errorMessage = error.localizedDescription
@@ -150,7 +162,7 @@ final class FollowersStore: ObservableObject {
         }
     }
 
-    private func assign(_ list: [FollowerSummary], to relationship: Relationship) {
+    private func assign(_ list: [FollowerEdge], to relationship: Relationship) {
         switch relationship {
         case .followers:
             followers = list
@@ -159,7 +171,7 @@ final class FollowersStore: ObservableObject {
         }
     }
 
-    private func append(_ list: [FollowerSummary], to relationship: Relationship) {
+    private func append(_ list: [FollowerEdge], to relationship: Relationship) {
         switch relationship {
         case .followers:
             followers.append(contentsOf: list)

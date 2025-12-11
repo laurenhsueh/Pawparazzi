@@ -60,6 +60,9 @@ final class PawparazziAPI {
         var items: [URLQueryItem] = []
         let token = try requireSessionToken()
         items.append(.init(name: "session_token", value: token))
+        if let username {
+            items.append(.init(name: "username", value: username))
+        }
 
         return try await client.send(
             path: "/users/profile",
@@ -144,26 +147,52 @@ final class PawparazziAPI {
     }
 
     func listFollowers(
-        username: String,
+        username: String? = nil,
         limit: Int? = nil,
-        cursor: String? = nil,
-        relationship: String? = nil
+        cursor: String? = nil
     ) async throws -> FollowersListResponse {
-        var items: [URLQueryItem] = [
-            .init(name: "username", value: username)
-        ]
-        if let limit = limit {
+        var items: [URLQueryItem] = []
+        let token = try requireSessionToken()
+        items.append(.init(name: "session_token", value: token))
+
+        if let username {
+            items.append(.init(name: "username", value: username))
+        }
+        if let limit {
             items.append(.init(name: "limit", value: "\(limit)"))
         }
-        if let cursor = cursor {
+        if let cursor {
             items.append(.init(name: "cursor", value: cursor))
-        }
-        if let relationship {
-            items.append(.init(name: "relationship", value: relationship))
         }
 
         return try await client.send(
             path: "/users/listFollowers",
+            method: .get,
+            queryItems: items
+        )
+    }
+
+    func listFollowing(
+        username: String? = nil,
+        limit: Int? = nil,
+        cursor: String? = nil
+    ) async throws -> FollowingListResponse {
+        var items: [URLQueryItem] = []
+        let token = try requireSessionToken()
+        items.append(.init(name: "session_token", value: token))
+
+        if let username {
+            items.append(.init(name: "username", value: username))
+        }
+        if let limit {
+            items.append(.init(name: "limit", value: "\(limit)"))
+        }
+        if let cursor {
+            items.append(.init(name: "cursor", value: cursor))
+        }
+
+        return try await client.send(
+            path: "/users/listFollowing",
             method: .get,
             queryItems: items
         )
@@ -174,9 +203,13 @@ final class PawparazziAPI {
     func listCats(
         limit: Int? = nil,
         cursor: String? = nil,
-        username: String? = nil
+        username: String? = nil,
+        includeAuthContext: Bool = true
     ) async throws -> CatListResponse {
         var items: [URLQueryItem] = []
+        if includeAuthContext, let token = sessionToken {
+            items.append(.init(name: "session_token", value: token))
+        }
         if let limit = limit {
             items.append(.init(name: "limit", value: "\(limit)"))
         }
@@ -194,8 +227,11 @@ final class PawparazziAPI {
         )
     }
 
-    func getCat(id: UUID) async throws -> CatDetailResponse {
-        let items = [URLQueryItem(name: "id", value: id.uuidString)]
+    func getCat(id: UUID, includeAuthContext: Bool = true) async throws -> CatDetailResponse {
+        var items = [URLQueryItem(name: "id", value: id.uuidString)]
+        if includeAuthContext, let token = sessionToken {
+            items.append(.init(name: "session_token", value: token))
+        }
         return try await client.send(
             path: "/cats/get",
             method: .get,
@@ -207,12 +243,16 @@ final class PawparazziAPI {
         tags: [String],
         mode: String = "any",
         limit: Int? = nil,
-        cursor: String? = nil
+        cursor: String? = nil,
+        includeAuthContext: Bool = true
     ) async throws -> CatListResponse {
         var items: [URLQueryItem] = [
             .init(name: "tags", value: tags.joined(separator: ",")),
             .init(name: "mode", value: mode)
         ]
+        if includeAuthContext, let token = sessionToken {
+            items.append(.init(name: "session_token", value: token))
+        }
 
         if let limit = limit {
             items.append(.init(name: "limit", value: "\(limit)"))
@@ -270,6 +310,119 @@ final class PawparazziAPI {
         let body = CatLikeRequest(sessionToken: token, catId: id)
         return try await client.send(
             path: "/cats/removeLike",
+            method: .post,
+            body: body
+        )
+    }
+
+    // MARK: - Collections
+
+    func createCollection(name: String, description: String?) async throws -> CollectionCreateResponse {
+        let token = try requireSessionToken()
+        let body = CollectionCreateRequest(sessionToken: token, name: name, description: description)
+        return try await client.send(
+            path: "/collections/create",
+            method: .post,
+            body: body
+        )
+    }
+
+    func listCollections(username: String, limit: Int? = nil, cursor: String? = nil) async throws -> CollectionListResponse {
+        var items: [URLQueryItem] = [
+            .init(name: "username", value: username)
+        ]
+        if let limit {
+            items.append(.init(name: "limit", value: "\(limit)"))
+        }
+        if let cursor {
+            items.append(.init(name: "cursor", value: cursor))
+        }
+
+        return try await client.send(
+            path: "/collections/list",
+            method: .get,
+            queryItems: items
+        )
+    }
+
+    func getCollection(
+        id: UUID,
+        limit: Int? = nil,
+        cursor: String? = nil,
+        includeAuthContext: Bool = true
+    ) async throws -> CollectionDetailResponse {
+        var items: [URLQueryItem] = [
+            .init(name: "collection_id", value: id.uuidString)
+        ]
+        if let limit {
+            items.append(.init(name: "limit", value: "\(limit)"))
+        }
+        if let cursor {
+            items.append(.init(name: "cursor", value: cursor))
+        }
+        if includeAuthContext, let token = sessionToken {
+            items.append(.init(name: "session_token", value: token))
+        }
+
+        return try await client.send(
+            path: "/collections/get",
+            method: .get,
+            queryItems: items
+        )
+    }
+
+    func updateCollection(
+        id: UUID,
+        name: String?,
+        description: String?
+    ) async throws -> CollectionUpdateResponse {
+        let token = try requireSessionToken()
+        let body = CollectionUpdateRequest(
+            sessionToken: token,
+            collectionId: id,
+            name: name,
+            description: description
+        )
+        return try await client.send(
+            path: "/collections/update",
+            method: .post,
+            body: body
+        )
+    }
+
+    func deleteCollection(id: UUID) async throws {
+        let token = try requireSessionToken()
+        let body = CollectionDeleteRequest(sessionToken: token, collectionId: id)
+        _ = try await client.send(
+            path: "/collections/delete",
+            method: .post,
+            body: body
+        ) as BasicResponse
+    }
+
+    func addCatToCollection(collectionId: UUID, catId: UUID) async throws -> CollectionMutationResponse {
+        let token = try requireSessionToken()
+        let body = CollectionCatMutationRequest(
+            sessionToken: token,
+            collectionId: collectionId,
+            catId: catId
+        )
+        return try await client.send(
+            path: "/collections/addCat",
+            method: .post,
+            body: body
+        )
+    }
+
+    func removeCatFromCollection(collectionId: UUID, catId: UUID) async throws -> CollectionMutationResponse {
+        let token = try requireSessionToken()
+        let body = CollectionCatMutationRequest(
+            sessionToken: token,
+            collectionId: collectionId,
+            catId: catId
+        )
+        return try await client.send(
+            path: "/collections/removeCat",
             method: .post,
             body: body
         )

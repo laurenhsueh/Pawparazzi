@@ -20,12 +20,12 @@ struct FriendsView: View {
         store.followers.count
     }
     
-    private var filteredUsers: [FollowerSummary] {
-        let base: [FollowerSummary] = selectedSegment == .following ? store.following : store.followers
+    private var filteredUsers: [FollowerEdge] {
+        let base: [FollowerEdge] = selectedSegment == .following ? store.following : store.followers
         guard !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
             return base
         }
-        return base.filter { $0.username.localizedCaseInsensitiveContains(searchText) }
+        return base.filter { $0.user.username.localizedCaseInsensitiveContains(searchText) }
     }
     
     var body: some View {
@@ -61,7 +61,7 @@ struct FriendsView: View {
                             action: {
                                 Task {
                                     let action = selectedSegment == .following ? "unfollow" : nil
-                                    await store.toggleFollow(username: user.username, action: action)
+                                    await store.toggleFollow(username: user.user.username, action: action)
                                 }
                             }
                         )
@@ -190,7 +190,7 @@ private struct FollowSegmentControl: View {
 // MARK: - Row
 
 private struct FollowRow: View {
-    let user: FollowerSummary
+    let user: FollowerEdge
     let isFollowingSegment: Bool
     let actionTitle: String
     let action: () -> Void
@@ -210,7 +210,7 @@ private struct FollowRow: View {
                         )
                     )
                 
-                if let avatar = user.avatarUrl,
+                if let avatar = user.user.avatarUrl,
                    let url = URL(string: avatar) {
                     AsyncImage(url: url) { image in
                         image
@@ -221,7 +221,7 @@ private struct FollowRow: View {
                     }
                     .clipShape(Circle())
                 } else {
-                    Text(String(user.username.prefix(1)).uppercased())
+                    Text(String(user.user.username.prefix(1)).uppercased())
                         .font(.custom("Inter-Regular", size: 20))
                         .fontWeight(.semibold)
                         .foregroundStyle(.white)
@@ -230,10 +230,10 @@ private struct FollowRow: View {
             .frame(width: 48, height: 48)
             
             VStack(alignment: .leading, spacing: 4) {
-                Text("@\(user.username)")
+                Text("@\(user.user.username)")
                     .font(.custom("Inter-Regular", size: 16))
                     .foregroundStyle(.primary)
-                if let bio = user.bio {
+                if let bio = user.user.bio {
                     Text(bio)
                         .font(.custom("Inter-Regular", size: 12))
                         .foregroundStyle(AppColors.mutedText)

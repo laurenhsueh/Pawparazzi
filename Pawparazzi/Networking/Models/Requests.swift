@@ -56,3 +56,27 @@ struct CatLikeRequest: Encodable {
     let catId: UUID
 }
 
+struct CollectionCreateRequest: Encodable {
+    let sessionToken: String
+    let name: String
+    let description: String?
+}
+
+struct CollectionUpdateRequest: Encodable {
+    let sessionToken: String
+    let collectionId: UUID
+    let name: String?
+    let description: String?
+}
+
+struct CollectionDeleteRequest: Encodable {
+    let sessionToken: String
+    let collectionId: UUID
+}
+
+struct CollectionCatMutationRequest: Encodable {
+    let sessionToken: String
+    let collectionId: UUID
+    let catId: UUID
+}
+

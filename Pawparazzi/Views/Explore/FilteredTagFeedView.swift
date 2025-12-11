@@ -15,7 +15,7 @@ struct FilteredTagFeedView: View {
     
     var filteredCats: [CatModel] {
         let source = store.searchResults.isEmpty ? store.cats : store.searchResults
-        return source.filter { $0.tags?.contains(tag) ?? false }
+        return source.filter { $0.tags.contains(tag) }
     }
     
     // Generate random heights for each cat (80 or 160)

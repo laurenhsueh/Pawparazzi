@@ -16,7 +16,14 @@ struct FollowActionResponse: Codable, APIResponseEnvelope {
 struct FollowersListResponse: Codable, APIResponseEnvelope {
     let success: Bool
     let error: String
-    let followers: [FollowerSummary]
+    let followers: [FollowerEdge]
+    let nextCursor: String?
+}
+
+struct FollowingListResponse: Codable, APIResponseEnvelope {
+    let success: Bool
+    let error: String
+    let following: [FollowerEdge]
     let nextCursor: String?
 }
 
