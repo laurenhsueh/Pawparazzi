@@ -20,12 +20,31 @@ final class UserStore: ObservableObject {
     @Published var isUpdatingAvatar: Bool = false
 
     private let api: PawparazziAPI
+    private var loadProfileTask: Task<Void, Never>?
 
     init(api: PawparazziAPI = .shared) {
         self.api = api
     }
 
     func loadProfile(username: String? = nil) async {
+        if let loadProfileTask {
+            await loadProfileTask.value
+            if username == nil || username == profile?.username {
+                return
+            }
+        }
+
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.performLoadProfile(username: username)
+        }
+
+        loadProfileTask = task
+        await task.value
+        loadProfileTask = nil
+    }
+
+    private func performLoadProfile(username: String?) async {
         guard !isLoading else { return }
         isLoading = true
         defer { isLoading = false }
@@ -34,6 +53,8 @@ final class UserStore: ObservableObject {
             let response = try await api.fetchProfile(username: username)
             profile = response.user
             errorMessage = nil
+        } catch is CancellationError {
+            // Silently ignore refresh cancellations
         } catch {
             errorMessage = error.localizedDescription
         }

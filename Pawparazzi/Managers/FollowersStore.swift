@@ -27,12 +27,31 @@ final class FollowersStore: ObservableObject {
     private var followingCursor: String?
     private var hasMoreFollowers: Bool = true
     private var hasMoreFollowing: Bool = true
+    private var refreshTask: Task<Void, Never>?
 
     init(api: PawparazziAPI = .shared) {
         self.api = api
     }
 
     func refresh(username: String? = nil) async {
+        if let refreshTask {
+            await refreshTask.value
+            if username == cachedUsername {
+                return
+            }
+        }
+
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.performRefresh(username: username)
+        }
+
+        refreshTask = task
+        await task.value
+        refreshTask = nil
+    }
+
+    private func performRefresh(username: String?) async {
         followersCursor = nil
         followingCursor = nil
         hasMoreFollowers = true
@@ -112,6 +131,8 @@ final class FollowersStore: ObservableObject {
                 updateCursor(response.nextCursor, for: relationship)
             }
             errorMessage = nil
+        } catch is CancellationError {
+            // Ignore refresh cancellations to keep UI stable
         } catch {
             errorMessage = error.localizedDescription
         }

@@ -38,6 +38,7 @@ final class CatStore: ObservableObject {
     private var currentSearchTags: [String] = []
     private var currentSearchMode: String = "any"
     private var searchTask: Task<Void, Never>?
+    private var loadCatsTask: Task<Void, Never>?
 
     init(api: PawparazziAPI = .shared) {
         self.api = api
@@ -188,6 +189,22 @@ final class CatStore: ObservableObject {
     // MARK: - Private
 
     private func loadCats(reset: Bool) async {
+        if let loadCatsTask {
+            await loadCatsTask.value
+            if !reset { return }
+        }
+
+        let task = Task { [weak self] in
+            guard let self else { return }
+            await self.performLoadCats(reset: reset)
+        }
+
+        loadCatsTask = task
+        await task.value
+        loadCatsTask = nil
+    }
+
+    private func performLoadCats(reset: Bool) async {
         guard !isLoading, hasMore || reset else { return }
         isLoading = true
         defer { isLoading = false }
@@ -207,6 +224,8 @@ final class CatStore: ObservableObject {
             } else {
                 cats.append(contentsOf: response.cats)
             }
+        } catch is CancellationError {
+            // Ignore cancellations to avoid surfacing transient errors during refresh
         } catch {
             errorMessage = error.localizedDescription
         }

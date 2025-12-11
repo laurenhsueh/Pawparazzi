@@ -9,6 +9,10 @@ import SwiftUI
 
 struct FeedView: View {
     @StateObject private var store = CatStore.shared
+    @StateObject private var userStore = UserStore.shared
+    @StateObject private var collectionsModel = CollectionsViewModel()
+    @State private var selectedCat: CatModel?
+    @State private var selectedGuestUsername: String?
     
     var body: some View {
         VStack(spacing: 0) {
@@ -25,10 +29,18 @@ struct FeedView: View {
             ScrollView {
                 LazyVStack(spacing: 24) {
                     ForEach(store.cats) { cat in
-                        PostCard(cat: cat)
-                            .task {
-                                await store.loadMoreIfNeeded(currentCat: cat)
+                        PostCard(
+                            cat: cat,
+                            onProfileTapped: { user in
+                                selectedGuestUsername = user.username
+                            },
+                            onSaveTapped: { cat in
+                                selectedCat = cat
                             }
+                        )
+                        .task {
+                            await store.loadMoreIfNeeded(currentCat: cat)
+                        }
                     }
                     
                     if store.isLoading && !store.cats.isEmpty {
@@ -37,9 +49,6 @@ struct FeedView: View {
                     }
                 }
                 .padding(.vertical, 12)
-            }
-            .task {
-                await store.refresh()
             }
             .refreshable {
                 await store.refresh()
@@ -53,6 +62,35 @@ struct FeedView: View {
             }
         }
         .background(AppColors.background)
+        .task {
+            await store.refresh()
+            await userStore.loadProfile()
+        }
+        .sheet(item: $selectedCat, onDismiss: {
+            selectedCat = nil
+        }) { cat in
+            CollectionPickerSheet(
+                cat: cat,
+                username: userStore.profile?.username,
+                model: collectionsModel,
+                onAdded: {},
+                onCancel: {
+                    selectedCat = nil
+                }
+            )
+        }
+        .sheet(isPresented: Binding(
+            get: { selectedGuestUsername != nil },
+            set: { isPresented in
+                if !isPresented {
+                    selectedGuestUsername = nil
+                }
+            }
+        )) {
+            if let username = selectedGuestUsername {
+                GuestUserView(username: username)
+            }
+        }
     }
 }
 #Preview {

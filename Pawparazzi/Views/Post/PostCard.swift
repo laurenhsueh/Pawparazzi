@@ -9,6 +9,18 @@ import SwiftUI
 
 struct PostCard: View {
     let cat: CatModel
+    let onProfileTapped: (UserProfile) -> Void
+    let onSaveTapped: (CatModel) -> Void
+    
+    init(
+        cat: CatModel,
+        onProfileTapped: @escaping (UserProfile) -> Void = { _ in },
+        onSaveTapped: @escaping (CatModel) -> Void = { _ in }
+    ) {
+        self.cat = cat
+        self.onProfileTapped = onProfileTapped
+        self.onSaveTapped = onSaveTapped
+    }
 
     private let contentWidth = UIScreen.main.bounds.width - 70
     private let contentHeight: CGFloat = 400
@@ -19,27 +31,32 @@ struct PostCard: View {
                 // MARK: - User section
                 HStack(alignment: .center) {
                     // Username + profile circle
-                    HStack(spacing: 12) {
-                        Group {
-                            if let avatarUrl = cat.poster.avatarUrl, let url = URL(string: avatarUrl) {
-                                AsyncImage(url: url) { image in
-                                    image
-                                        .resizable()
-                                        .scaledToFill()
-                                } placeholder: {
+                    Button {
+                        onProfileTapped(cat.poster)
+                    } label: {
+                        HStack(spacing: 12) {
+                            Group {
+                                if let avatarUrl = cat.poster.avatarUrl, let url = URL(string: avatarUrl) {
+                                    AsyncImage(url: url) { image in
+                                        image
+                                            .resizable()
+                                            .scaledToFill()
+                                    } placeholder: {
+                                        Color(AppColors.secondarySystemBackground)
+                                    }
+                                } else {
                                     Color(AppColors.secondarySystemBackground)
                                 }
-                            } else {
-                                Color(AppColors.secondarySystemBackground)
                             }
-                        }
-                        .frame(width: 36, height: 36)
-                        .clipShape(Circle())
+                            .frame(width: 36, height: 36)
+                            .clipShape(Circle())
 
-                        Text("@\(cat.poster.username)")
-                            .font(.custom("Slabo13px-Regular", size: 14))
-                            .foregroundStyle(AppColors.accent)
+                            Text("@\(cat.poster.username)")
+                                .font(.custom("Slabo13px-Regular", size: 14))
+                                .foregroundStyle(AppColors.accent)
+                        }
                     }
+                    .buttonStyle(.plain)
 
                     Spacer()
 
@@ -150,8 +167,7 @@ struct PostCard: View {
 
                     // Save button
                     Button {
-                        CatStore.shared.selectedPhotoToSave = cat.imageUrl
-                        CatStore.shared.showingSaveToCollection = true
+                        onSaveTapped(cat)
                     } label: {
                         Image("PawIcon")
                             .padding(6)

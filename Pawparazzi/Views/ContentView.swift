@@ -16,6 +16,7 @@ struct ContentView: View {
 }
 
 private struct MainTabView: View {
+    @StateObject private var userStore = UserStore.shared
     @State private var selectedTab: String = "feed"
 
     var body: some View {
@@ -25,7 +26,7 @@ private struct MainTabView: View {
                 switch selectedTab {
                 case "feed": FeedView()
                 case "explore": ExploreView()
-                case "post": PostView()
+                case "post": PostView(onPostSuccess: handlePostSuccess)
                 case "friends": FriendsView()
                 case "user": UserView()
                 default: FeedView()
@@ -66,9 +67,16 @@ private struct MainTabView: View {
                         withAnimation { selectedTab = "friends" }
                     }
                     
-                    NavBarButton(icon: "UserIcon", title: "User", isSelected: selectedTab == "user") {
-                        withAnimation { selectedTab = "user" }
-                    }
+                    NavBarButton(
+                        icon: "UserIcon",
+                        title: "User",
+                        isSelected: selectedTab == "user",
+                        action: {
+                            withAnimation { selectedTab = "user" }
+                        },
+                        avatarUrl: userStore.profile?.avatarUrl,
+                        fallbackInitials: userInitials
+                    )
                 }
                 .padding(.top, 16)
             }
@@ -76,6 +84,17 @@ private struct MainTabView: View {
         }
         .background(AppColors.background)
         .edgesIgnoringSafeArea(.bottom)
+        .task {
+            await userStore.loadProfile()
+        }
+    }
+    
+    private var userInitials: String {
+        guard let username = userStore.profile?.username, let first = username.first else {
+            return "PP"
+        }
+        let second = username.dropFirst().first.map { String($0).uppercased() } ?? ""
+        return "\(String(first).uppercased())\(second)"
     }
     
     // MARK: - Calculate pill offset
@@ -89,6 +108,13 @@ private struct MainTabView: View {
         default: return 0
         }
     }
+
+    // MARK: - Post handling
+    private func handlePostSuccess() {
+        withAnimation {
+            selectedTab = "feed"
+        }
+    }
 }
 
 // MARK: - NavBarButton
@@ -97,17 +123,23 @@ struct NavBarButton: View {
     let title: String
     let isSelected: Bool
     let action: () -> Void
+    var avatarUrl: String? = nil
+    var fallbackInitials: String? = nil
     
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                Image(icon)
-                    .renderingMode(icon == "UserIcon" ? .original : .template)
-                    .foregroundStyle(
-                        icon == "UserIcon"
-                        ? .primary
-                        : (isSelected ? AppColors.accent : AppColors.mutedText)
+                if icon == "UserIcon" {
+                    UserTabAvatar(
+                        avatarUrl: avatarUrl,
+                        fallbackInitials: fallbackInitials ?? "PP",
+                        isSelected: isSelected
                     )
+                } else {
+                    Image(icon)
+                        .renderingMode(.template)
+                        .foregroundStyle(isSelected ? AppColors.accent : AppColors.mutedText)
+                }
 
                 Text(title)
                     .font(.custom("Inter-Regular", size: 10))
@@ -117,6 +149,54 @@ struct NavBarButton: View {
             }
             .frame(maxWidth: .infinity)
         }
+    }
+}
+
+private struct UserTabAvatar: View {
+    let avatarUrl: String?
+    let fallbackInitials: String
+    let isSelected: Bool
+    
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(AppColors.secondarySystemBackground)
+            
+            if let avatarUrl, let url = URL(string: avatarUrl) {
+                AsyncImage(url: url) { phase in
+                    switch phase {
+                    case .success(let image):
+                        image
+                            .resizable()
+                            .scaledToFill()
+                    case .empty:
+                        ProgressView()
+                            .scaleEffect(0.7)
+                    case .failure:
+                        fallbackInitialsView
+                    @unknown default:
+                        fallbackInitialsView
+                    }
+                }
+                .clipShape(Circle())
+            } else {
+                fallbackInitialsView
+            }
+        }
+        .frame(width: 24, height: 24)
+        .overlay(
+            Circle()
+                .stroke(isSelected ? AppColors.accent : AppColors.mutedText.opacity(0.25), lineWidth: isSelected ? 2 : 1)
+        )
+        .animation(.easeInOut(duration: 0.2), value: isSelected)
+    }
+    
+    private var fallbackInitialsView: some View {
+        Text(fallbackInitials)
+            .font(.custom("Inter-Regular", size: 12))
+            .fontWeight(.semibold)
+            .foregroundStyle(.primary)
+            .minimumScaleFactor(0.7)
     }
 }
 

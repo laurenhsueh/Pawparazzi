@@ -14,17 +14,20 @@ struct DescriptionEditor: View {
         ZStack(alignment: .topLeading) {
             if text.isEmpty {
                 Text(placeholder)
+                    .font(.custom("Inter-Regular", size: 14))
                     .foregroundStyle(AppColors.mutedText)
                     .padding(4)
-                    .font(.custom("Inter-Regular", size: 14))
             }
             
             TextEditor(text: $text)
                 .font(.custom("Inter-Regular", size: 14))
                 .foregroundStyle(.primary)
-                .padding(4)
-                .frame(height: 120)
-                .cornerRadius(8)
+                .frame(height: 90)
+                .scrollContentBackground(.hidden) // hide default (black) background
+                // .overlay(
+                //     RoundedRectangle(cornerRadius: 8)
+                //         .stroke(AppColors.fieldBorder)
+                // )
         }
     }
 }

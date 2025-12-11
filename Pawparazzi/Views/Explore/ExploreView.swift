@@ -119,20 +119,7 @@ struct ExploreView: View {
                                         ForEach(catsByTag[tag] ?? []) { cat in
                                             if let photoURL = cat.imageUrl,
                                                let url = URL(string: photoURL) {
-                                                
-                                                AsyncImage(url: url) { image in
-                                                    image
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .frame(width: 132, height: 200)
-                                                        .clipped()
-                                                        .cornerRadius(12)
-                                                } placeholder: {
-                                                    Rectangle()
-                                                        .fill(Color(.secondarySystemFill))
-                                                        .frame(width: 132, height: 200)
-                                                        .cornerRadius(12)
-                                                }
+                                                CatImageView(url: url)
                                             }
                                         }
                                     }
@@ -192,17 +179,7 @@ private struct CatThumbnail: View {
     var body: some View {
         VStack(spacing: 8) {
             if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(Color(.secondarySystemFill))
-                }
-                .frame(width: 132, height: 200)
-                .clipped()
-                .cornerRadius(12)
+                CatImageView(url: url)
             }
 
             Text(cat.name)
@@ -210,6 +187,32 @@ private struct CatThumbnail: View {
                 .foregroundStyle(AppColors.mutedText)
                 .lineLimit(1)
                 .frame(width: 132)
+        }
+    }
+}
+
+private struct CatImageView: View {
+    let url: URL
+
+    var body: some View {
+        AsyncImage(url: url) { phase in
+            switch phase {
+            case .success(let image):
+                image
+                    .resizable()
+                    .scaledToFill()
+                    .frame(width: 132, height: 200)
+                    .clipped()
+                    .cornerRadius(12)
+            case .empty, .failure:
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.secondarySystemFill))
+                    .frame(width: 132, height: 200)
+            @unknown default:
+                RoundedRectangle(cornerRadius: 12)
+                    .fill(Color(.secondarySystemFill))
+                    .frame(width: 132, height: 200)
+            }
         }
     }
 }

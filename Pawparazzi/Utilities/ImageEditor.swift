@@ -25,7 +25,7 @@ extension UIImage {
         let aspect = size.height / size.width
         let newWidth = min(size.width, maxWidth)
         let newHeight = newWidth * aspect
-        UIGraphicsBeginImageContextWithOptions(CGSize(width: newWidth, height: newHeight), false, 0.7)
+        UIGraphicsBeginImageContextWithOptions(CGSize(width: newWidth, height: newHeight), false, 1.0)
         draw(in: CGRect(x: 0, y: 0, width: newWidth, height: newHeight))
         let resized = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
