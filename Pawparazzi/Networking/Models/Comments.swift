@@ -7,8 +7,16 @@
 import Foundation
 
 struct CommentModel: Codable, Identifiable, Hashable {
-    let id: UUID
-    let user: UserProfile
+    /// Alias to match `Identifiable`
+    var id: UUID { commentId }
+
+    let commentId: UUID
+    let catId: UUID
     let comment: String
-    let createdAt: Date
+    let commentAt: Date
+    let user: UserProfile
+    let isOwner: Bool
+
+    /// Backwards compatible alias used by existing views.
+    var createdAt: Date { commentAt }
 }

@@ -59,8 +59,12 @@ struct CatLikeRequest: Encodable {
 struct PostCommentRequest: Codable {
     let sessionToken: String
     let catId: UUID
-    let username: String
     let comment: String
+}
+
+struct DeleteCommentRequest: Encodable {
+    let sessionToken: String
+    let commentId: UUID
 }
 
 struct CollectionCreateRequest: Encodable {

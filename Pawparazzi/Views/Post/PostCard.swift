@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct PostCard: View {
+    @StateObject private var store = CatStore.shared
     @State private var showComments = false
     
     let cat: CatModel
@@ -139,16 +140,6 @@ struct PostCard: View {
 
                 // MARK: - Action bar
                 HStack(spacing: 22) {
-                    // MARK: - Comment Button
-//                    Button {
-//                        showComments = true
-//                    } label: {
-//                        HStack(spacing: 6) {
-//                            Image(systemName: "bubble.right")
-//                            Text("\(cat.comments.count)")
-//                        }
-//                    }
-//                    .buttonStyle(.plain)
 
                     // MARK: - Likes Button
                     Button {
@@ -164,6 +155,23 @@ struct PostCard: View {
                             Image(systemName: (cat.isLiked ?? false) ? "heart.fill" : "heart")
                                 .foregroundStyle((cat.isLiked ?? false) ? .red : .primary)
                             Text("\(cat.likes)")
+                        }
+                    }
+                    .buttonStyle(.plain)
+                    
+                    // MARK: - Comment Button
+                    Button {
+                        showComments = true
+                        Task {
+                            if store.comments[cat.id] == nil {
+                                await store.loadComments(for: cat.id, reset: true)
+                            }
+                        }
+                    } label: {
+                        HStack(spacing: 6) {
+                            Image(systemName: "bubble.right")
+                            let count = store.comments[cat.id]?.count ?? cat.comments.count
+                            Text("\(count)")
                         }
                     }
                     .buttonStyle(.plain)

@@ -31,6 +31,11 @@ final class CatStore: ObservableObject {
     @Published var selectedPhotoToSave: String?
     
     @Published var comments: [UUID: [CommentModel]] = [:]
+    @Published var commentNextPage: [UUID: Int] = [:]
+    @Published private var commentLoading: [UUID: Bool] = [:]
+    @Published private var commentErrors: [UUID: String?] = [:]
+    @Published private var commentPosting: [UUID: Bool] = [:]
+    @Published private var commentPostErrors: [UUID: String?] = [:]
 
     private let api: PawparazziAPI
     private var nextCursor: String?
@@ -141,24 +146,79 @@ final class CatStore: ObservableObject {
             userCollections[collection] = [photoURL]
         }
     }
-    func fetchComments(for catId: UUID) async {
+    func loadComments(for catId: UUID, reset: Bool = false, limit: Int = 20) async {
+        let nextPage = reset ? 1 : (commentNextPage[catId] ?? 1)
+        guard commentLoading[catId] != true else { return }
+
+        commentLoading[catId] = true
+        defer { commentLoading[catId] = false }
+
         do {
-            let response: [CommentModel] = try await api.getComments(for: catId)
-            comments[catId] = response
+            let response = try await api.getComments(
+                for: catId,
+                page: nextPage,
+                limit: limit
+            )
+
+            if reset || nextPage == 1 {
+                comments[catId] = response.comments
+            } else {
+                comments[catId, default: []].append(contentsOf: response.comments)
+            }
+
+            if let next = response.nextPage {
+                commentNextPage[catId] = next
+            } else {
+                commentNextPage[catId] = nil
+            }
+            commentErrors[catId] = nil
         } catch {
-            print("Error fetching comments:", error)
-            comments[catId] = []
+            commentErrors[catId] = error.localizedDescription
+            if reset || nextPage == 1 {
+                comments[catId] = []
+            }
+            commentNextPage[catId] = nil
         }
+    }
+
+    func loadMoreCommentsIfNeeded(for catId: UUID) async {
+        guard commentNextPage[catId] != nil else { return }
+        await loadComments(for: catId, reset: false)
+    }
+
+    func refreshComments(for catId: UUID) async {
+        await loadComments(for: catId, reset: true)
     }
 
     // MARK: - Post a new comment
     func postComment(for catId: UUID, comment: String) async {
+        guard commentPosting[catId] != true else { return }
+        commentPosting[catId] = true
+        commentPostErrors[catId] = nil
+        defer { commentPosting[catId] = false }
+
         do {
             let newComment: CommentModel = try await api.postComment(for: catId, comment: comment)
-            comments[catId, default: []].append(newComment)
+            comments[catId, default: []].insert(newComment, at: 0)
         } catch {
-            print("Error posting comment:", error)
+            commentPostErrors[catId] = error.localizedDescription
         }
+    }
+
+    func isLoadingComments(for catId: UUID) -> Bool {
+        commentLoading[catId] ?? false
+    }
+
+    func commentError(for catId: UUID) -> String? {
+        commentErrors[catId] ?? nil
+    }
+
+    func isPostingComment(for catId: UUID) -> Bool {
+        commentPosting[catId] ?? false
+    }
+
+    func commentPostError(for catId: UUID) -> String? {
+        commentPostErrors[catId] ?? nil
     }
 
     func clearSearchResults() {

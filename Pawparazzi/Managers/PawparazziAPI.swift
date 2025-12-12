@@ -317,38 +317,65 @@ final class PawparazziAPI {
     }
     // MARK: - Comments
 
-    func getComments(for catId: UUID) async throws -> [CommentModel] {
-        let token = try requireSessionToken()
-        let queryItems: [URLQueryItem] = [
-            .init(name: "session_token", value: token),
-            .init(name: "cat_id", value: catId.uuidString)
+    func getComments(
+        for catId: UUID,
+        page: Int = 1,
+        limit: Int = 20,
+        includeAuthContext: Bool = true
+    ) async throws -> CommentListResponse {
+        let sanitizedPage = max(1, page)
+        let sanitizedLimit = min(max(limit, 1), 50)
+
+        var queryItems: [URLQueryItem] = [
+            .init(name: "cat_id", value: catId.uuidString),
+            .init(name: "page", value: "\(sanitizedPage)"),
+            .init(name: "limit", value: "\(sanitizedLimit)")
         ]
+
+        if includeAuthContext, let token = sessionToken {
+            queryItems.append(.init(name: "session_token", value: token))
+        }
         
-        let response: CommentListResponse = try await client.send(
-            path: "/comments/list",
+        return try await client.send(
+            path: "/cats/comments/list",
             method: .get,
             queryItems: queryItems
         )
-        
-        return response.comments
     }
-
+    
     func postComment(for catId: UUID, comment: String) async throws -> CommentModel {
         let token = try requireSessionToken()
+        let trimmedComment = comment.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmedComment.isEmpty else {
+            throw APIError.server(message: "Comment cannot be empty.")
+        }
+        guard trimmedComment.count <= 500 else {
+            throw APIError.server(message: "Comment must be 500 characters or fewer.")
+        }
         let body = PostCommentRequest(
             sessionToken: token,
             catId: catId,
-            username: "",
-            comment: comment
+            comment: trimmedComment
         )
         
         let response: PostCommentResponse = try await client.send(
-            path: "/comments/post",
+            path: "/cats/comments/add",
             method: .post,
             body: body
         )
         
         return response.comment
+    }
+    
+    func deleteComment(id: UUID) async throws -> DeleteCommentResponse {
+        let token = try requireSessionToken()
+        let body = DeleteCommentRequest(sessionToken: token, commentId: id)
+        
+        return try await client.send(
+            path: "/cats/comments/delete",
+            method: .post,
+            body: body
+        )
     }
 
     // MARK: - Collections
