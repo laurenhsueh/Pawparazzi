@@ -116,28 +116,30 @@ struct CollectionDetailView: View {
 private struct CollectionCatTile: View {
     let cat: CatModel
     let height: CGFloat
+    @State private var showFocus = false
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
-            if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
-                AsyncImage(url: url) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                } placeholder: {
-                    Rectangle()
-                        .fill(Color(.secondarySystemFill))
-                }
-                .frame(height: height)
+            Button { showFocus = true } label: {
+                CatImage(
+                    url: URL(string: cat.imageUrl ?? ""),
+                    width: nil,
+                    height: height,
+                    focusCat: cat
+                )
                 .frame(maxWidth: .infinity)
-                .clipped()
-                .cornerRadius(12)
             }
+            .buttonStyle(.plain)
 
             Text(cat.name)
                 .font(.custom("Inter-Regular", size: 12))
                 .foregroundStyle(AppColors.mutedText)
                 .lineLimit(1)
         }
+        .fullScreenCover(isPresented: $showFocus) {
+            PostFocusView(cat: cat)
+        }
     }
 }
+
+

@@ -33,6 +33,7 @@ final class PawparazziAPI {
         self.storage = storage
         self.sessionToken = storage.string(forKey: sessionStorageKey)
     }
+    
 
     func clearSession() {
         sessionToken = nil
@@ -313,6 +314,41 @@ final class PawparazziAPI {
             method: .post,
             body: body
         )
+    }
+    // MARK: - Comments
+
+    func getComments(for catId: UUID) async throws -> [CommentModel] {
+        let token = try requireSessionToken()
+        let queryItems: [URLQueryItem] = [
+            .init(name: "session_token", value: token),
+            .init(name: "cat_id", value: catId.uuidString)
+        ]
+        
+        let response: CommentListResponse = try await client.send(
+            path: "/comments/list",
+            method: .get,
+            queryItems: queryItems
+        )
+        
+        return response.comments
+    }
+
+    func postComment(for catId: UUID, comment: String) async throws -> CommentModel {
+        let token = try requireSessionToken()
+        let body = PostCommentRequest(
+            sessionToken: token,
+            catId: catId,
+            username: "",
+            comment: comment
+        )
+        
+        let response: PostCommentResponse = try await client.send(
+            path: "/comments/post",
+            method: .post,
+            body: body
+        )
+        
+        return response.comment
     }
 
     // MARK: - Collections

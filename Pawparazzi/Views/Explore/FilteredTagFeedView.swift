@@ -7,6 +7,9 @@
 import SwiftUI
 
 struct FilteredTagFeedView: View {
+    @State private var showFocus = false
+    @State private var selectedCat: CatModel?
+
     let tag: String
     @ObservedObject var store: CatStore
     let onBack: () -> Void   // callback for back button
@@ -70,25 +73,27 @@ struct FilteredTagFeedView: View {
                     ForEach(0..<columns, id: \.self) { colIndex in
                         VStack(spacing: 4) {
                             ForEach(columnedCats[colIndex]) { cat in
-                                if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
-                                    AsyncImage(url: url) { image in
-                                        image
-                                            .resizable()
-                                            .scaledToFill()
-                                            .frame(width: columnWidth, height: randomHeight())
-                                            .clipped()
-                                            .cornerRadius(12)
-                                    } placeholder: {
-                                        Rectangle()
-                                            .fill(Color(.secondarySystemFill))
-                                            .frame(width: columnWidth, height: randomHeight())
-                                            .cornerRadius(12)
+                                if let url = URL(string: cat.imageUrl ?? "") {
+                                    Button {
+                                        selectedCat = cat
+                                        showFocus = true
+                                    } label: {
+                                        CatImage(
+                                            url: url,
+                                            width: columnWidth,
+                                            height: randomHeight(),
+                                            focusCat: cat
+                                        )
                                     }
+                                    .buttonStyle(.plain)
                                     .onAppear {
-                                        Task {
-                                            await store.loadMoreSearchResultsIfNeeded(currentCat: cat)
-                                        }
+                                        Task { await store.loadMoreSearchResultsIfNeeded(currentCat: cat) }
                                     }
+                                }
+                            }
+                            .fullScreenCover(isPresented: $showFocus) {
+                                if let selectedCat = selectedCat {
+                                    PostFocusView(cat: selectedCat)
                                 }
                             }
                         }

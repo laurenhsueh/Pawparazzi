@@ -23,6 +23,7 @@ struct CatModel: Codable, Identifiable, Hashable {
     var likes: Int
     let poster: UserProfile
     var userLiked: Bool
+    var comments: [CommentModel] = []
 
     /// Backwards compatible alias used by existing views.
     var isLiked: Bool? {

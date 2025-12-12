@@ -7,6 +7,7 @@ struct UserView: View {
     @State private var newCollectionName: String = ""
     @State private var newCollectionError: String?
     @State private var selectedCollection: CollectionPreview?
+    @State private var showSettings = false
     
     var body: some View {
         ScrollView {
@@ -75,6 +76,9 @@ struct UserView: View {
                 onCreate: createCollection
             )
         }
+        .sheet(isPresented: $showSettings) {
+            SettingsView()
+        }
     }
     
     // MARK: - Sections
@@ -86,18 +90,19 @@ struct UserView: View {
             
             Spacer()
             
-            // Button(action: {
-            //     Task {
-            //         await refreshProfile()
-            //         await refreshCollections(force: true)
-            //     }
-            // }) {
-            //     Image(systemName: "gearshape.fill")
-            //         .font(.system(size: 20, weight: .semibold))
-            //         .foregroundStyle(.primary)
-            // }
-            // .buttonStyle(.plain)
-            // .disabled(userStore.isLoading || collectionsModel.isLoading)
+             Button(action: {
+                 Task {
+                     await refreshProfile()
+                     await refreshCollections(force: true)
+                     showSettings = true
+                 }
+             }) {
+                 Image(systemName: "gearshape.fill")
+                     .font(.system(size: 20, weight: .semibold))
+                     .foregroundStyle(.primary)
+             }
+             .buttonStyle(.plain)
+             .disabled(userStore.isLoading || collectionsModel.isLoading)
         }
         .padding(.top, 24)
     }

@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct PostCard: View {
+    @State private var showComments = false
+    
     let cat: CatModel
     let onProfileTapped: (UserProfile) -> Void
     let onSaveTapped: (CatModel) -> Void
@@ -137,11 +139,18 @@ struct PostCard: View {
 
                 // MARK: - Action bar
                 HStack(spacing: 22) {
-//                    HStack(spacing: 6) {
-//                        Image(systemName: "bubble.right")
-//                        Text("5")
+                    // MARK: - Comment Button
+//                    Button {
+//                        showComments = true
+//                    } label: {
+//                        HStack(spacing: 6) {
+//                            Image(systemName: "bubble.right")
+//                            Text("\(cat.comments.count)")
+//                        }
 //                    }
+//                    .buttonStyle(.plain)
 
+                    // MARK: - Likes Button
                     Button {
                         Task {
                             if cat.isLiked == true {
@@ -159,19 +168,14 @@ struct PostCard: View {
                     }
                     .buttonStyle(.plain)
 
-//                    HStack(spacing: 6) {
-//                        Image(systemName: "square.and.arrow.up")
-//                    }
-
                     Spacer()
 
-                    // Save button
-                    Button {
-                        onSaveTapped(cat)
-                    } label: {
-                        Image("PawIcon")
-                            .padding(6)
+                    Button { onSaveTapped(cat) } label: {
+                        Image("PawIcon").padding(6)
                     }
+                }
+                .sheet(isPresented: $showComments) {
+                    CommentsSheet(cat: cat)
                 }
                 .font(.custom("Inter-Regular", size: 14))
                 .foregroundStyle(.primary)

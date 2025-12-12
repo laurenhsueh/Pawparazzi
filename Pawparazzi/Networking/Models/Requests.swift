@@ -56,6 +56,13 @@ struct CatLikeRequest: Encodable {
     let catId: UUID
 }
 
+struct PostCommentRequest: Codable {
+    let sessionToken: String
+    let catId: UUID
+    let username: String
+    let comment: String
+}
+
 struct CollectionCreateRequest: Encodable {
     let sessionToken: String
     let name: String

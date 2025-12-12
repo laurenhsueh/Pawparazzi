@@ -119,7 +119,12 @@ struct ExploreView: View {
                                         ForEach(catsByTag[tag] ?? []) { cat in
                                             if let photoURL = cat.imageUrl,
                                                let url = URL(string: photoURL) {
-                                                CatImageView(url: url)
+                                                CatImage(
+                                                    url: url,
+                                                    width: 132,
+                                                    height: 200,
+                                                    focusCat: cat
+                                                )
                                             }
                                         }
                                     }
@@ -175,12 +180,20 @@ struct ExploreView: View {
 
 private struct CatThumbnail: View {
     let cat: CatModel
+    @State private var showFocus = false
 
     var body: some View {
         VStack(spacing: 8) {
-            if let photoURL = cat.imageUrl, let url = URL(string: photoURL) {
-                CatImageView(url: url)
+            Button {
+                showFocus = true
+            } label: {
+                CatImage(
+                    url: URL(string: cat.imageUrl ?? ""),
+                    width: 132,
+                    height: 200
+                )
             }
+            .buttonStyle(.plain)
 
             Text(cat.name)
                 .font(.custom("Inter-Regular", size: 12))
@@ -191,31 +204,6 @@ private struct CatThumbnail: View {
     }
 }
 
-private struct CatImageView: View {
-    let url: URL
-
-    var body: some View {
-        AsyncImage(url: url) { phase in
-            switch phase {
-            case .success(let image):
-                image
-                    .resizable()
-                    .scaledToFill()
-                    .frame(width: 132, height: 200)
-                    .clipped()
-                    .cornerRadius(12)
-            case .empty, .failure:
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.secondarySystemFill))
-                    .frame(width: 132, height: 200)
-            @unknown default:
-                RoundedRectangle(cornerRadius: 12)
-                    .fill(Color(.secondarySystemFill))
-                    .frame(width: 132, height: 200)
-            }
-        }
-    }
-}
 
 #Preview {
     ExploreView()

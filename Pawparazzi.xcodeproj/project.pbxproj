@@ -420,11 +420,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = Z3JM6Z9BMM;
+				DEVELOPMENT_TEAM = 8JP4JC6GL4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pawparazzi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Pawparazzi;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow Pawparazzi to use the camera to capture cat photos.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow Pawparazzi to tag posts with your current location.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow Pawparazzi to capture sound when recording videos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow Pawparazzi to save edited photos back to your library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Pawparazzi to pick photos from your library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -434,7 +439,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.justzhu.Pawparazzi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lhsueh.Pawparazzi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -453,11 +458,16 @@
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 4;
-				DEVELOPMENT_TEAM = Z3JM6Z9BMM;
+				DEVELOPMENT_TEAM = 8JP4JC6GL4;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = Pawparazzi/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Pawparazzi;
+				INFOPLIST_KEY_NSCameraUsageDescription = "Allow Pawparazzi to use the camera to capture cat photos.";
+				INFOPLIST_KEY_NSLocationWhenInUseUsageDescription = "Allow Pawparazzi to tag posts with your current location.";
+				INFOPLIST_KEY_NSMicrophoneUsageDescription = "Allow Pawparazzi to capture sound when recording videos.";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "Allow Pawparazzi to save edited photos back to your library.";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "Allow Pawparazzi to pick photos from your library.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -467,7 +477,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 0.1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.justzhu.Pawparazzi;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lhsueh.Pawparazzi;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

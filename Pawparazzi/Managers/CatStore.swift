@@ -29,6 +29,8 @@ final class CatStore: ObservableObject {
     ]
     @Published var showingSaveToCollection: Bool = false
     @Published var selectedPhotoToSave: String?
+    
+    @Published var comments: [UUID: [CommentModel]] = [:]
 
     private let api: PawparazziAPI
     private var nextCursor: String?
@@ -137,6 +139,25 @@ final class CatStore: ObservableObject {
             userCollections[collection]?.append(photoURL)
         } else {
             userCollections[collection] = [photoURL]
+        }
+    }
+    func fetchComments(for catId: UUID) async {
+        do {
+            let response: [CommentModel] = try await api.getComments(for: catId)
+            comments[catId] = response
+        } catch {
+            print("Error fetching comments:", error)
+            comments[catId] = []
+        }
+    }
+
+    // MARK: - Post a new comment
+    func postComment(for catId: UUID, comment: String) async {
+        do {
+            let newComment: CommentModel = try await api.postComment(for: catId, comment: comment)
+            comments[catId, default: []].append(newComment)
+        } catch {
+            print("Error posting comment:", error)
         }
     }
 
